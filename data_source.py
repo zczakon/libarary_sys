@@ -1,10 +1,10 @@
 
 class Lists:
 
-    def __init__(self, student_list, book_list, lending_history):
+    def __init__(self, student_list, book_list):
         self.student_list = student_list
         self.book_list = book_list
-        self.lending_history = lending_history  # list of lists of student.lending's
+        self.lending_history = [student.lendings for student in student_list]
 
     def add_student(self, student):
         self.student_list.append(student)
@@ -40,4 +40,4 @@ class Lists:
             for lending in self.lending_history[i]:  # is a list of book lendings
                 if lending.book == book:
                     lendings_of_book.append(lending)
-        pass
+        return lendings_of_book
