@@ -16,7 +16,7 @@ class Student:
         self.id = id(self)
         self.account = Account(Role("user"))
         self.reg_date = datetime.date.today()
-        self.books_lent = []
+        self.lendings = []
 
     def get_name(self):
         return self.name
@@ -43,16 +43,16 @@ class Student:
         """
         returns BookLending instance
         """
-        self.books_lent.append(BookLending(self, book))
+        self.lendings.append(BookLending(self, book))
         pass
 
     def return_book(self, book):
         """
         deletes from books_lent list the book
         """
-        for lending in self.books_lent:
+        for lending in self.lendings:
             if lending.book == book:
-                self.books_lent.remove(lending)
+                lending.set_return_date(datetime.date.today())
         pass
 
 
@@ -77,6 +77,7 @@ class Book:
 
 
 class BookLending:
+    id: int
     return_date: datetime
     return_time = 30
 
@@ -86,6 +87,7 @@ class BookLending:
         self.id = id(self)
         self.creation_date = datetime.date.today()
         self.max_return_date = datetime.date.today() + timedelta(days=self.return_time)
+        self.return_date = None
 
     def is_overdue(self):
         if self.return_date is not None:
@@ -103,5 +105,12 @@ class BookLending:
     def get_creation_date(self):
         return self.creation_date
 
+    def get_max_return_date(self):
+        return self.max_return_date
+
     def get_return_date(self):
-        return self.return_date
+        if self.return_date is not None:
+            return self.return_date
+
+    def set_return_date(self, return_date):
+        self.return_date = return_date

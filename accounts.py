@@ -1,4 +1,14 @@
 import random
+import string
+
+
+class Role:
+    def __init__(self, name):
+        self.name = name
+        self.id = id(self)
+
+    def get_name(self):
+        return self.name
 
 
 class Account:
@@ -26,12 +36,3 @@ class Account:
     @staticmethod
     def generate_pass(n: int) -> str:
         return ''.join((random.choice(string.ascii_letters + string.digits) for _ in range(n)))
-
-
-class Role:
-    def __init__(self, name):
-        self.name = name
-        self.id = id(self)
-
-    def get_name(self):
-        return self.name
