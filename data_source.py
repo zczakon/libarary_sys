@@ -1,4 +1,3 @@
-
 class Lists:
 
     def __init__(self, student_list, book_list):
@@ -41,3 +40,18 @@ class Lists:
                 if lending.book == book:
                     lendings_of_book.append(lending)
         return lendings_of_book
+
+    def pending_books(self):
+        pending = self.book_list
+        for lending in self.lending_history:
+            if lending.return_date is None:
+                pending.remove(lending.book)
+        return pending
+
+    def available_books(self):
+        available = self.book_list
+        pending: list = self.pending_books()
+        for book in self.book_list:
+            if book in pending:
+                available.remove(book)
+        return available
