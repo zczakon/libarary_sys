@@ -1,4 +1,4 @@
-from classes import Student, Book
+from library_components import Student, Book
 from data_source import DataRepository
 
 
