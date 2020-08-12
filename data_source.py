@@ -1,4 +1,4 @@
-class Lists:
+class DataRepository:
 
     def __init__(self, student_list, book_list):
         self.student_list = student_list
@@ -9,7 +9,7 @@ class Lists:
         self.student_list.append(student)
         pass
 
-    def del_student(self, student):
+    def delete_student(self, student):
         self.student_list.remove(student)
         pass
 
@@ -17,7 +17,7 @@ class Lists:
         self.book_list.append(book)
         pass
 
-    def del_book(self, book):
+    def delete_book(self, book):
         self.book_list.remove(book)
         pass
 
@@ -26,6 +26,12 @@ class Lists:
 
     def get_book_list(self):
         return self.book_list
+
+    def get_available_book_list(self):
+        return self.available_book_list()
+
+    def get_pending_book_list(self):
+        return self.pending_book_list()
 
     def lendings_per_student(self, student):
         for i in range(len(self.lending_history)):
@@ -41,16 +47,16 @@ class Lists:
                     lendings_of_book.append(lending)
         return lendings_of_book
 
-    def pending_books(self):
+    def pending_book_list(self):
         pending = self.book_list
         for lending in self.lending_history:
             if lending.return_date is None:
                 pending.remove(lending.book)
         return pending
 
-    def available_books(self):
+    def available_book_list(self):
         available = self.book_list
-        pending: list = self.pending_books()
+        pending: list = self.pending_book_list()
         for book in self.book_list:
             if book in pending:
                 available.remove(book)

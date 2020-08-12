@@ -18,6 +18,9 @@ class Student:
         self.reg_date = datetime.date.today()
         self.lendings = []
 
+    def __str__(self):
+        return self.name + ' ' + self.surname
+
     def get_name(self):
         return self.name
 
@@ -63,6 +66,9 @@ class Book:
         self.author = author
         self.id = id(self)
 
+    def __str__(self):
+        return '"'+str(self.title)+'"'
+
     def get_isbn(self):
         return self.isbn
 
@@ -88,6 +94,10 @@ class BookLending:
         self.creation_date = datetime.date.today()
         self.max_return_date = datetime.date.today() + timedelta(days=self.return_time)
         self.return_date = None
+
+    def __str__(self):
+        return str(self.book), str(self.student), 'creation date :' + str(self.creation_date),\
+               'return date: ' + str(self.return_date)
 
     def is_overdue(self):
         if self.return_date is not None:
