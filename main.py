@@ -2,8 +2,8 @@ from typing import Dict
 
 from data_source import DataRepository
 from edition_interface import EditBook, EditStudent
-from interface import StudentInterface, BookInterface
-from operations import StudentOperations, BookOperations
+from interface import StudentInterface, BookInterface, BookLendingInterface
+from operations import StudentOperations, BookOperations, BookLendingOperations
 
 
 def main():
@@ -12,7 +12,9 @@ def main():
     student_operations = StudentOperations(data_repository)
     student_interface = StudentInterface(student_operations)
     book_operations = BookOperations(data_repository)
+    book_lending_operations = BookLendingOperations(data_repository)
     book_interface = BookInterface(book_operations, student_operations)
+    book_lending_interface = BookLendingInterface(book_lending_operations, student_interface, book_interface)
 
     edit_student = EditStudent(student_operations)
     edit_book = EditBook(book_operations, student_operations)
@@ -20,7 +22,8 @@ def main():
     print('Hello and welcome to The Library. Choose your action from the menu: ')
     menu: Dict[str, str] = {'1': 'Add Student', '2': 'Delete Student', '3': 'Add Book', '4': 'Delete Book',
                             '5': 'Lend Book', '6': 'Return Book', '7': 'Search Student', '8': 'Search Book',
-                            '9': 'Edit Student', '10': 'Edit Book', '11': 'Exit'}
+                            '9': 'Edit Student', '10': 'Edit Book', '11': 'Search Book Lending',
+                            '12': 'See Overdue Book Lendings', '13': 'Exit'}
 
     while True:
         options = menu.keys()
@@ -50,6 +53,10 @@ def main():
         elif selection == '10':
             edit_book.edit()
         elif selection == '11':
+            book_lending_interface.search()
+        elif selection == '12':
+            book_lending_interface.see_overdue()
+        elif selection == '13':
             break
         else:
             print("Unknown Option Selected!")
