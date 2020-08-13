@@ -103,3 +103,21 @@ class BookOperations:
             if book.isbn == isbn:
                 search_results.append(book)
         return search_results
+
+
+class BookLendingOperations:
+    def __init__(self, data_repository):
+        self.data_repository = data_repository
+
+    def search(self):
+        pass
+
+    def search_by_student(self, student):
+        return self.data_repository.lendings_per_student(student)
+
+    def search_by_book(self, book):
+        return self.data_repository.lendings_per_book(book)
+
+    def see_overdue(self):
+        lending_history = self.data_repository.get_lending_history()
+        return self.data_repository.overdue_book_list(lending_history)

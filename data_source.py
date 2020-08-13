@@ -33,6 +33,9 @@ class DataRepository:
     def get_pending_book_list(self):
         return self.pending_book_list()
 
+    def get_lending_history(self):
+        return self.lending_history
+
     def lendings_per_student(self, student):
         for i in range(len(self.lending_history)):
             if self.lending_history[i] == student.lendings:  # student.lendings -> self.lendings should be created
@@ -61,3 +64,11 @@ class DataRepository:
             if book in pending:
                 available.remove(book)
         return available
+
+    def overdue_book_list(self, lending_history):
+        self.lending_history = lending_history
+        overdue_lendings = []
+        for book_lending in self.lending_history:
+            if book_lending.is_overdue():
+                overdue_lendings.append(book_lending)
+        return overdue_lendings

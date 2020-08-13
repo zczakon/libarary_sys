@@ -9,7 +9,7 @@ class StudentInterface:
     def add(self):
         name = input('Type name of student you want to add: ')
         surname = input('Type surname of student you want to add: ')
-        pesel: int = int(input('Type pesel of student you want to add: '))
+        pesel = int(input('Type pesel of student you want to add: '))
         student = self.student_operations.add(name, pesel, surname)
         print('Student', student.name, student.surname, 'successfully added!')
         pass
