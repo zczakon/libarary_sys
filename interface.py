@@ -41,8 +41,10 @@ class StudentInterface:
         search_result = self.student_operations.search(data)
         if search_result:
             print(search_result)
+            return search_result
         else:
             print('There is no such student in the library.')
+            pass
 
 
 class BookInterface:
@@ -122,6 +124,54 @@ class BookInterface:
         search_result = self.book_operations.search(data)
         if search_result:
             print(search_result)
+            return search_result
         else:
             print('There is no such book in the library.')
+            pass
+
+
+class BookLendingInterface:
+    def __init__(self, book_lending_operations, student_interface, book_interface):
+        self.book_lending_operations = book_lending_operations
+        self.student_interface = student_interface
+        self.book_interface = book_interface
+
+    @staticmethod
+    def display_search_menu():
+        menu = {'1': 'Search by Student', '2': 'Search by Book'}
+        options = menu.keys()
+        print('Options: ')
+        for entry in options:
+            print(entry, menu[entry])
+        pass
+
+    def search(self):
+        self.display_search_menu()
+        selection = input()
+        if selection is '1':
+            self.search_by_student()
+        if selection is '2':
+            self.search_by_book()
+        pass
+
+    def search_by_student(self):
+        student = self.student_interface.search()
+        if student is None:
+            pass
+        search_results = self.book_lending_operations.search_by_student(student)
+        return search_results
+
+    def search_by_book(self):
+        book = self.book_interface.search()
+        if book is None:
+            pass
+        search_results = self.book_lending_operations.search_by_book(book)
+        return search_results
+
+    def see_overdue(self):
+        """
+        :return: list of all overdue lendings
+        """
+        print('All overdue lendings in the library: ')
+        self.book_lending_operations.see_overdue()
         pass
