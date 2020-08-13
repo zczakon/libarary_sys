@@ -122,6 +122,14 @@ class BookLending:
         if self.return_date is not None:
             return datetime.date.today() > self.max_return_date
 
+    def rental_time(self):
+        return datetime.date.today() - self.creation_date
+
+    def remaining_days(self):
+        if self.return_date is None:
+            pass
+        return self.max_return_date - self.max_return_date
+
     def get_student(self):
         return self.student
 
