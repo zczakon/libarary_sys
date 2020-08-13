@@ -13,7 +13,7 @@ class EditStudent(StudentInterface):
 
     def edit(self):
         to_edit = input('Which book do you want to edit?')
-        student = self.student_operations.student_search.search(to_edit)
+        student = self.student_operations.search(to_edit)
         if student is None:
             print('No student with matching data!')
             pass
@@ -63,7 +63,7 @@ class EditBook(BookInterface):
 
     def edit(self):
         to_edit = input('Which book do you want to edit?')
-        book = self.book_operations.book_search.search(to_edit)
+        book = self.book_operations.search(to_edit)
         if book is None:
             print('No book with matching data!')
             pass
