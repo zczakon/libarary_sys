@@ -1,5 +1,4 @@
 from library_components import Student, Book
-from data_source import DataRepository
 
 
 class StudentOperations:
@@ -20,10 +19,35 @@ class StudentOperations:
         self.data_repository.delete_student(to_delete)
         pass
 
-    def search(self, student_name_surname: str):
-        for student in self.list():
-            if (student.name + ' ' + student.surname) == student_name_surname:
+    def search(self, data):
+        student_list = self.data_repository.get_student_list()
+        for student in student_list:
+            if student.full_name in self.list_by_fullname(data):
                 return student
+            elif student.surname in self.list_by_surname(data):
+                return student
+            elif student.pesel == data:
+                return student
+            elif student.id == data:
+                return student
+            else:
+                return None
+
+    def list_by_fullname(self, student_full_name: str):
+        search_results = []
+        student_list = self.list()
+        for student in student_list:
+            if (student.name + ' ' + student.surname) == student_full_name:
+                search_results.append(student)
+        return search_results
+
+    def list_by_surname(self, surname):
+        search_results = []
+        student_list = self.list()
+        for student in student_list:
+            if student.surname == surname:
+                search_results.append(student)
+        return search_results
 
 
 class BookOperations:
@@ -38,15 +62,45 @@ class BookOperations:
     def list(self):
         return self.data_repository.get_book_list()
 
+    def list_available(self):
+        return self.data_repository.get_available_book_list()
+
     def delete(self, title):
         to_delete = self.search(title)
         self.data_repository.delete_book(to_delete)
         pass
 
-    def search(self, title):
+    def search(self, data):
+        book_list = self.list()
+        for book in book_list:
+            if book in self.list_by_title(data):
+                return book
+            elif book in self.list_by_author(data):
+                return book
+            elif book in self.list_by_isbn(data):
+                return book
+            elif book.id == data:
+                return book
+            else:
+                return None
+
+    def list_by_title(self, title):
+        search_results = []
         for book in self.data_repository.book_list:
             if book.title == title:
-                return book
+                search_results.append(book)
+        return search_results
 
-    def list_available(self):
-        return self.data_repository.get_available_book_list()
+    def list_by_author(self, author):
+        search_results = []
+        for book in self.data_repository.book_list:
+            if book.author == author:
+                search_results.append(book)
+        return search_results
+
+    def list_by_isbn(self, isbn):
+        search_results = []
+        for book in self.data_repository.book_list:
+            if book.isbn == isbn:
+                search_results.append(book)
+        return search_results

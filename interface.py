@@ -31,13 +31,66 @@ class StudentInterface:
         to_delete = input('Which student do you want to delete? ')
         student = self.student_operations.delete(to_delete)
         if student:
-            print('Student ', student, ' was successfully deleted.')
+            print('Student ', student.name, student.surname, ' was successfully deleted.')
         else:
             print('No such student.')
         pass
 
+    def search(self):
+        data = input("Please type student's full name, surname, ID or pesel number: ")
+        search_result = self.student_operations.search(data)
+        if search_result:
+            print(search_result)
+        else:
+            print('There is no such student in the library.')
+
+    @staticmethod
+    def display_edit_menu():
+        menu = {'1': 'Edit Name', '2': 'Edit Surname', '3': 'Edit PESEL'}
+        options = menu.keys()
+        print('Options: ')
+        for entry in options:
+            print(entry, menu[entry])
+        pass
+
+    def edit(self):
+        to_edit = input('Which book do you want to edit?')
+        student = self.student_operations.search(to_edit)
+        selection = input()
+        if selection == '1':
+            self.edit_name(student)
+        elif selection == '2':
+            self.edit_surname(student)
+        elif selection == '3':
+            self.edit_pesel(student)
+        else:
+            print('Wrong selection!')
+
+    @staticmethod
+    def edit_name(student):
+        new_name = input('Enter new first name: ')
+        student.set_name(new_name)
+        print('Name successfully changed to', new_name, '!')
+        pass
+
+    @staticmethod
+    def edit_surname(student):
+        new_surname = input('Enter new surname: ')
+        student.set_surname(new_surname)
+        print('Surname successfully changed to', new_surname, '!')
+        pass
+
+    @staticmethod
+    def edit_pesel(student):
+        new_pesel = str(input('Enter new PESEL: '))
+        student.set_pesel(new_pesel)
+        print('PESEL successfully changed to:', new_pesel)
+        pass
+
 
 class BookInterface:
+    book_operations: BookOperations
+
     def __init__(self, book_operations: BookOperations, student_operations: StudentOperations):
         self.book_operations = book_operations
         self.student_operations = student_operations
@@ -75,7 +128,7 @@ class BookInterface:
         book = self.book_operations.delete(to_delete)
 
         if book:
-            print('Book', book, 'was successfully deleted.')
+            print('Book', '"' + book.title + '"', 'was successfully deleted.')
         else:
             print('No such book.')
         pass
@@ -97,10 +150,64 @@ class BookInterface:
         pass
 
     def return_book(self):
-        student_name_surname = input('Please insert students name and surname. ')
-        student = self.student_operations.search(student_name_surname)
+        student_fullname = input('Please insert students name and surname. ')
+        student = self.student_operations.search(student_fullname)
+
         to_return = input('Which book do you want to return? ')
         book = self.book_operations.search(to_return)
+
         student.return_book(book)
-        print(book.title, 'was successfully returned')
+        print('"' + book.title + '"', 'was successfully returned')
+        pass
+
+    def search(self):
+        data = input("Please type book's title, author, ID or ISBN number: ")
+        search_result = self.book_operations.search(data)
+        if search_result:
+            print(search_result)
+        else:
+            print('There is no such book in the library.')
+        pass
+
+    @staticmethod
+    def display_edit_menu():
+        menu = {'1': 'Edit Title', '2': 'Edit Author', '3': 'Edit ISBN'}
+        options = menu.keys()
+        print('Options: ')
+        for entry in options:
+            print(entry, menu[entry])
+        pass
+
+    def edit(self):
+        to_edit = input('Which book do you want to edit?')
+        book = self.book_operations.search(to_edit)
+        selection = input()
+        if selection == '1':
+            self.edit_title(book)
+        elif selection == '2':
+            self.edit_author(book)
+        elif selection == '3':
+            self.edit_isbn(book)
+        else:
+            print('Wrong selection!')
+
+    @staticmethod
+    def edit_title(book):
+        new_title = input('Enter new title: ')
+        book.set_title(new_title)
+        print('Title successfully changed to', '"' + new_title + '"!')
+        pass
+
+    @staticmethod
+    def edit_author(book):
+        new_author = input('Enter new author: ')
+        book.set_author(new_author)
+        print('Author successfully changed to', new_author, '!')
+        pass
+
+    @staticmethod
+    def edit_isbn(book):
+        new_isbn = input('Enter new ISBN number: ')
+        book.set_isbn(new_isbn)
+        print('ISBN number successfully changed to', new_isbn)
         pass

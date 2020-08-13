@@ -1,10 +1,11 @@
+from typing import Dict
+
 from data_source import DataRepository
 from interface import StudentInterface, BookInterface
 from operations import StudentOperations, BookOperations
 
 
 def main():
-
     data_repository = DataRepository([], [])
     student_operations = StudentOperations(data_repository)
     student_interface = StudentInterface(student_operations)
@@ -12,8 +13,9 @@ def main():
     book_interface = BookInterface(book_operations, student_operations)
 
     print('Hello and welcome to The Library. Choose your action from the menu: ')
-    menu = {'1': 'Add Student', '2': 'Delete Student', '3': 'Add Book', '4': 'Delete Book',
-            '5': 'Lend Book', '6': 'Return Book', '7': 'Exit'}
+    menu: Dict[str, str] = {'1': 'Add Student', '2': 'Delete Student', '3': 'Add Book', '4': 'Delete Book',
+                            '5': 'Lend Book', '6': 'Return Book', '7': 'Search Student', '8': 'Search Book',
+                            '9': 'Exit'}
 
     while True:
         options = menu.keys()
@@ -35,6 +37,10 @@ def main():
         elif selection == '6':
             book_interface.return_book()
         elif selection == '7':
+            student_interface.search()
+        elif selection == '8':
+            book_interface.search()
+        elif selection == '9':
             break
         else:
             print("Unknown Option Selected!")
