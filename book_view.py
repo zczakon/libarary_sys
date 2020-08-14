@@ -1,53 +1,7 @@
-from operations import StudentOperations, BookOperations
+from operations import BookOperations, StudentOperations
 
 
-class StudentInterface:
-
-    def __init__(self, student_operations: StudentOperations):
-        self.student_operations = student_operations
-
-    def add(self):
-        name = input('Type name of student you want to add: ')
-        surname = input('Type surname of student you want to add: ')
-        pesel = int(input('Type pesel of student you want to add: '))
-        student = self.student_operations.add(name, pesel, surname)
-        print('Student', student.name, student.surname, 'successfully added!')
-        pass
-
-    def list(self):
-        student_list = self.student_operations.list()
-        if student_list:
-            print('Current list of students in the library:')
-            print(student_list)
-        else:
-            print('There are no students in the library.')
-
-    def delete(self):
-        self.list()
-        student_list = self.student_operations.list()
-        if not student_list:
-            pass
-
-        to_delete = input('Which student do you want to delete? ')
-        student = self.student_operations.delete(to_delete)
-        if student:
-            print('Student ', student.name, student.surname, ' was successfully deleted.')
-        else:
-            print('No such student.')
-        pass
-
-    def search(self):
-        data = input("Please type student's full name, surname, ID or pesel number: ")
-        search_result = self.student_operations.search(data)
-        if search_result:
-            print(search_result)
-            return search_result
-        else:
-            print('There is no such student in the library.')
-            pass
-
-
-class BookInterface:
+class BookView:
     book_operations: BookOperations
 
     def __init__(self, book_operations: BookOperations, student_operations: StudentOperations):
@@ -130,48 +84,51 @@ class BookInterface:
             pass
 
 
-class BookLendingInterface:
-    def __init__(self, book_lending_operations, student_interface, book_interface):
-        self.book_lending_operations = book_lending_operations
-        self.student_interface = student_interface
-        self.book_interface = book_interface
-
+class BookEditView(BookView):
     @staticmethod
-    def display_search_menu():
-        menu = {'1': 'Search by Student', '2': 'Search by Book'}
+    def display_edit_menu():
+        menu = {'1': 'Edit Title', '2': 'Edit Author', '3': 'Edit ISBN'}
         options = menu.keys()
         print('Options: ')
         for entry in options:
             print(entry, menu[entry])
         pass
 
-    def search(self):
-        self.display_search_menu()
+    def edit(self):
+        to_edit = input('Which book do you want to edit?')
+        book = self.book_operations.search(to_edit)
+        if book is None:
+            print('No book with matching data!')
+            pass
+
+        self.display_edit_menu()
         selection = input()
-        if selection is '1':
-            self.search_by_student()
-        if selection is '2':
-            self.search_by_book()
+        if selection == '1':
+            self.edit_title(book)
+        elif selection == '2':
+            self.edit_author(book)
+        elif selection == '3':
+            self.edit_isbn(book)
+        else:
+            print('Wrong selection!')
+
+    @staticmethod
+    def edit_title(book):
+        new_title = input('Enter new title: ')
+        book.set_title(new_title)
+        print('Title successfully changed to', '"' + new_title + '"!')
         pass
 
-    def search_by_student(self):
-        student = self.student_interface.search()
-        if student is None:
-            pass
-        search_results = self.book_lending_operations.search_by_student(student)
-        return search_results
+    @staticmethod
+    def edit_author(book):
+        new_author = input('Enter new author: ')
+        book.set_author(new_author)
+        print('Author successfully changed to', new_author, '!')
+        pass
 
-    def search_by_book(self):
-        book = self.book_interface.search()
-        if book is None:
-            pass
-        search_results = self.book_lending_operations.search_by_book(book)
-        return search_results
-
-    def see_overdue(self):
-        """
-        :return: list of all overdue lendings
-        """
-        print('All overdue lendings in the library: ')
-        self.book_lending_operations.see_overdue()
+    @staticmethod
+    def edit_isbn(book):
+        new_isbn = int(input('Enter new ISBN number: '))
+        book.set_isbn(new_isbn)
+        print('ISBN number successfully changed to', new_isbn)
         pass

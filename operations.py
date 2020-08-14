@@ -1,4 +1,5 @@
 from library_components import Student, Book
+from data_source import DataRepository
 
 
 class StudentOperations:
@@ -121,3 +122,23 @@ class BookLendingOperations:
     def see_overdue(self):
         lending_history = self.data_repository.get_lending_history()
         return self.data_repository.overdue_book_list(lending_history)
+
+    def list(self):
+        return self.data_repository.get_lending_history()
+
+    def flatten_lending_history(self):
+        lending_history = self.list()
+        flat_list = []
+        for sublist in lending_history:
+            for item in sublist:
+                flat_list.append(item)
+        print(flat_list)
+        return flat_list
+
+    @staticmethod
+    def check_rental_time(book_lending):
+        return book_lending.rental_time()
+
+    @staticmethod
+    def check_remaining_days(book_lending):
+        return book_lending.remaining_days()
