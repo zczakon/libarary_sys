@@ -1,12 +1,22 @@
-from operations import BookOperations, StudentOperations
+from operations import BookOperations
+from student_view import StudentSearchViewComponent
+# TODO zrobić by BookView nie printował list
 
 
 class BookView:
     book_operations: BookOperations
 
-    def __init__(self, book_operations: BookOperations, student_operations: StudentOperations):
+    def __init__(self, book_operations: BookOperations, student_search_view: StudentSearchViewComponent):
         self.book_operations = book_operations
-        self.student_operations = student_operations
+        self.edit_view_component = BookEditViewComponent(book_operations)
+        self.search_view_component = BookSearchViewComponent(book_operations)
+        self.student_search_view = student_search_view
+
+    def edit(self):
+        self.edit_view_component.edit()
+
+    def search(self):
+        self.search_view_component.search()
 
     def add(self):
         isbn = int(input('Type ISBN number of the book you want to add: '))
@@ -47,24 +57,24 @@ class BookView:
         pass
 
     def lend(self):
-        student_name_surname = input('Please insert students name and surname. ')
-        student = self.student_operations.search(student_name_surname)
+        student = self.student_search_view.search()
 
         print('List of books available in the library: ')
         self.list_available()
-        available_book_list = self.book_operations.list_available()
-
         to_lend = input('Which book do you want to lend? ')
+        is_available = self.book_operations.is_available(to_lend)
+        if is_available:
+            book = self.book_operations.search(to_lend)
+            student.lend_book(book)
+        pass
+
+    @staticmethod
+    def is_available(available_book_list, to_lend):
         if to_lend not in available_book_list:
             pass
 
-        book = self.book_operations.search(to_lend)
-        student.lend_book(book)
-        pass
-
     def return_book(self):
-        student_fullname = input('Please insert students name and surname. ')
-        student = self.student_operations.search(student_fullname)
+        student = self.student_search_view.search()
 
         to_return = input('Which book do you want to return? ')
         book = self.book_operations.search(to_return)
@@ -72,6 +82,11 @@ class BookView:
         student.return_book(book)
         print('"' + book.title + '"', 'was successfully returned')
         pass
+
+
+class BookSearchViewComponent:
+    def __init__(self, book_operations):
+        self.book_operations = book_operations
 
     def search(self):
         data = input("Please type book's title, author, ID or ISBN number: ")
@@ -84,7 +99,10 @@ class BookView:
             pass
 
 
-class BookEditView(BookView):
+class BookEditViewComponent:
+    def __init__(self, book_operations):
+        self.book_operations = book_operations
+
     @staticmethod
     def display_edit_menu():
         menu = {'1': 'Edit Title', '2': 'Edit Author', '3': 'Edit ISBN'}
@@ -112,23 +130,20 @@ class BookEditView(BookView):
         else:
             print('Wrong selection!')
 
-    @staticmethod
-    def edit_title(book):
+    def edit_title(self, book):
         new_title = input('Enter new title: ')
-        book.set_title(new_title)
+        self.book_operations.set_title(book, new_title)
         print('Title successfully changed to', '"' + new_title + '"!')
         pass
 
-    @staticmethod
-    def edit_author(book):
+    def edit_author(self, book):
         new_author = input('Enter new author: ')
-        book.set_author(new_author)
+        self.book_operations.set_author(book, new_author)
         print('Author successfully changed to', new_author, '!')
         pass
 
-    @staticmethod
-    def edit_isbn(book):
+    def edit_isbn(self, book):
         new_isbn = int(input('Enter new ISBN number: '))
-        book.set_isbn(new_isbn)
+        self.book_operations.set_isbn(book, new_isbn)
         print('ISBN number successfully changed to', new_isbn)
         pass

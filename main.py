@@ -1,9 +1,9 @@
 from typing import Dict
 
 from data_source import DataRepository
-from book_view import BookEditView, BookView
-from student_view import StudentView, StudentEditView
-from book_lending_view import BookLendingView
+from book_view import BookView, BookSearchViewComponent
+from student_view import StudentView, StudentSearchViewComponent
+from book_lending_view import BookLendingView, BookLendingSearchViewComponent
 from operations import StudentOperations, BookOperations, BookLendingOperations
 
 
@@ -11,14 +11,18 @@ def main():
     data_repository: DataRepository = DataRepository([], [])
 
     student_operations = StudentOperations(data_repository)
-    student_view = StudentView(student_operations)
     book_operations = BookOperations(data_repository)
     book_lending_operations = BookLendingOperations(data_repository)
-    book_view = BookView(book_operations, student_operations)
-    book_lending_view = BookLendingView(book_lending_operations, student_view, book_view)
 
-    edit_student = StudentEditView(student_operations)
-    edit_book = BookEditView(book_operations, student_operations)
+    student_view = StudentView(student_operations)
+    student_search_view = StudentSearchViewComponent(student_operations)
+
+    book_search_view = BookSearchViewComponent(book_operations)
+    book_view = BookView(book_operations, student_search_view)
+
+    book_lending_search_view = BookLendingSearchViewComponent(student_search_view, book_search_view,
+                                                              book_lending_operations)
+    book_lending_view = BookLendingView(book_lending_operations, book_lending_search_view, book_search_view)
 
     print('Hello and welcome to The Library. Choose your action from the menu: ')
     menu: Dict[str, str] = {'1': 'Add Student', '2': 'Delete Student', '3': 'Add Book', '4': 'Delete Book',
@@ -50,9 +54,9 @@ def main():
         elif selection == '8':
             book_view.search()
         elif selection == '9':
-            edit_student.edit()
+            student_view.edit()
         elif selection == '10':
-            edit_book.edit()
+            book_view.edit()
         elif selection == '11':
             book_lending_view.search()
         elif selection == '12':

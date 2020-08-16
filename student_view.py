@@ -1,10 +1,19 @@
 from operations import StudentOperations
+# TODO zrobić by StudentView nie printował list
 
 
 class StudentView:
 
     def __init__(self, student_operations: StudentOperations):
         self.student_operations = student_operations
+        self.edit_view_component = StudentEditViewComponent(student_operations)
+        self.search_view_component = StudentSearchViewComponent(student_operations)
+
+    def edit(self):
+        self.edit_view_component.edit()
+
+    def search(self):
+        self.search_view_component.search()
 
     def add(self):
         name = input('Type name of student you want to add: ')
@@ -36,18 +45,35 @@ class StudentView:
             print('No such student.')
         pass
 
+
+class StudentSearchViewComponent:
+    def __init__(self, student_operations):
+        self.student_operations = student_operations
+
     def search(self):
         data = input("Please type student's full name, surname, ID or pesel number: ")
         search_result = self.student_operations.search(data)
-        if search_result:
-            print(search_result)
-            return search_result
+        if len(search_result) > 1:
+            index = self.pick_index_from_list(search_result)
+            student = search_result[index - 1]
+            return student
         else:
             print('There is no such student in the library.')
             pass
 
+    @staticmethod
+    def pick_index_from_list(search_result):
+        print(search_result)
+        index = int(input('Please pick student from the list (enter number): '))
+        if len(search_result) < index:
+            pass
+        return int(index)
 
-class StudentEditView(StudentView):
+
+class StudentEditViewComponent:
+    def __init__(self, student_operations):
+        self.student_operations = student_operations
+
     @staticmethod
     def display_edit_menu():
         menu = {'1': 'Edit Name', '2': 'Edit Surname', '3': 'Edit PESEL'}
@@ -75,23 +101,20 @@ class StudentEditView(StudentView):
         else:
             print('Wrong selection!')
 
-    @staticmethod
-    def edit_name(student):
+    def edit_name(self, student):
         new_name = input('Enter new first name: ')
-        student.set_name(new_name)
+        self.student_operations.set_name(new_name, student)
         print('Name successfully changed to', new_name, '!')
         pass
 
-    @staticmethod
-    def edit_surname(student):
+    def edit_surname(self, student):
         new_surname = input('Enter new surname: ')
-        student.set_surname(new_surname)
+        self.student_operations(new_surname, student)
         print('Surname successfully changed to', new_surname, '!')
         pass
 
-    @staticmethod
-    def edit_pesel(student):
+    def edit_pesel(self, student):
         new_pesel = str(input('Enter new PESEL: '))
-        student.set_pesel(new_pesel)
+        self.student_operations(new_pesel, student)
         print('PESEL successfully changed to:', new_pesel)
         pass

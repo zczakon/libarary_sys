@@ -1,9 +1,10 @@
 from library_components import Student, Book
 from data_source import DataRepository
+# TODO zrobić by Operations nie printowało list - raczej nie powinien, bo to nie interface. Zwracanie?
 
 
 class StudentOperations:
-    def __init__(self, data_repository):
+    def __init__(self, data_repository: DataRepository):
         self.data_repository = data_repository
 
     def add(self, name, pesel, surname):
@@ -31,7 +32,7 @@ class StudentOperations:
             elif student.id == data:
                 return student
             else:
-                return None
+                pass
 
     def search_by_fullname(self, student_full_name: str):
         search_results = []
@@ -48,6 +49,20 @@ class StudentOperations:
             if student.surname == surname:
                 search_results.append(student)
         return search_results
+
+    @staticmethod
+    def set_name(new_name, student):
+        student.set_name(new_name)
+        pass
+
+    @staticmethod
+    def set_surname(new_name, student):
+        student.set_surname(new_name)
+        pass
+
+    @staticmethod
+    def set_pesel(new_pesel, student):
+        student.set_pesel(new_pesel)
 
 
 class BookOperations:
@@ -82,7 +97,7 @@ class BookOperations:
             elif book.id == data:
                 return book
             else:
-                return None
+                pass
 
     def search_by_title(self, title):
         search_results = []
@@ -104,6 +119,24 @@ class BookOperations:
             if book.isbn == isbn:
                 search_results.append(book)
         return search_results
+
+    @staticmethod
+    def set_title(book, new_title):
+        book.set_title(new_title)
+
+    @staticmethod
+    def set_author(book, new_author):
+        book.set_author(new_author)
+
+    @staticmethod
+    def set_isbn(book, new_isbn):
+        book.set_isbn(new_isbn)
+
+    def is_available(self, to_lend):
+        available_book_list = self.list_available()
+        if to_lend in available_book_list:
+            return True
+        pass
 
 
 class BookLendingOperations:
