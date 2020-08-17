@@ -1,10 +1,5 @@
-from operations import StudentOperations
-# TODO zrobić by StudentView nie printował list
-
-
 class StudentView:
-
-    def __init__(self, student_operations: StudentOperations):
+    def __init__(self, student_operations):
         self.student_operations = student_operations
         self.edit_view_component = StudentEditViewComponent(student_operations)
         self.search_view_component = StudentSearchViewComponent(student_operations)
@@ -13,7 +8,8 @@ class StudentView:
         self.edit_view_component.edit()
 
     def search(self):
-        self.search_view_component.search()
+        student = self.search_view_component.search()
+        return student
 
     def add(self):
         name = input('Type name of student you want to add: ')
@@ -23,23 +19,11 @@ class StudentView:
         print('Student', student.name, student.surname, 'successfully added!')
         pass
 
-    def list(self):
-        student_list = self.student_operations.list()
-        if student_list:
-            print('Current list of students in the library:')
-            print(student_list)
-        else:
-            print('There are no students in the library.')
-
     def delete(self):
-        self.list()
-        student_list = self.student_operations.list()
-        if not student_list:
-            pass
-
-        to_delete = input('Which student do you want to delete? ')
-        student = self.student_operations.delete(to_delete)
+        print('Which student do you want to delete? ')
+        student = self.search()
         if student:
+            self.student_operations.delete(student)
             print('Student ', student.name, student.surname, ' was successfully deleted.')
         else:
             print('No such student.')
@@ -57,6 +41,8 @@ class StudentSearchViewComponent:
             index = self.pick_index_from_list(search_result)
             student = search_result[index - 1]
             return student
+        elif len(search_result) == 1:
+            return search_result[0]
         else:
             print('There is no such student in the library.')
             pass

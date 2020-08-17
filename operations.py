@@ -1,10 +1,8 @@
 from library_components import Student, Book
-from data_source import DataRepository
-# TODO zrobić by Operations nie printowało list - raczej nie powinien, bo to nie interface. Zwracanie?
 
 
 class StudentOperations:
-    def __init__(self, data_repository: DataRepository):
+    def __init__(self, data_repository):
         self.data_repository = data_repository
 
     def add(self, name, pesel, surname):
@@ -132,11 +130,8 @@ class BookOperations:
     def set_isbn(book, new_isbn):
         book.set_isbn(new_isbn)
 
-    def is_available(self, to_lend):
-        available_book_list = self.list_available()
-        if to_lend in available_book_list:
-            return True
-        pass
+    def list_pending(self):
+        return self.data_repository.pending_book_list()
 
 
 class BookLendingOperations:

@@ -1,14 +1,12 @@
-# TODO zrobić by BookLendingView nie printował list
-
-
 class BookLendingView:
-    def __init__(self, book_lending_operations, book_lending_search_view_component, book_search_view):
+    def __init__(self, book_lending_operations, book_search_view, student_search_view):
         self.book_lending_operations = book_lending_operations
-        self.book_lending_search_view_component = book_lending_search_view_component
-        self.book_search_view = book_search_view
+        self.book_lending_search_view_component = BookLendingSearchViewComponent(
+            student_search_view, book_search_view, book_lending_operations)
 
     def search(self):
-        self.book_lending_search_view_component.search()
+        book_lending = self.book_lending_search_view_component.search()
+        return book_lending
 
     @staticmethod
     def display_check_date_time_menu():
@@ -105,9 +103,9 @@ class BookLendingSearchViewComponent:
         self.display_search_menu()
         selection = input()
         if selection is '1':
-            self.search_by_student()
+            return self.search_by_student()
         if selection is '2':
-            self.search_by_book()
+            return self.search_by_book()
         pass
 
     def search_by_student(self):
@@ -117,8 +115,17 @@ class BookLendingSearchViewComponent:
         student = self.student_search_view.search()
         if student is None:
             pass
-        search_results = self.book_lending_operations.search_by_student(student)
-        return search_results
+
+        search_result = self.book_lending_operations.search_by_student(student)
+        if len(search_result) > 1:
+            index = self.pick_index_from_list(search_result)
+            book_lending = search_result[index - 1]
+            return book_lending
+        elif len(search_result) == 1:
+            return search_result[0]
+        else:
+            print('There are no book lendings for this student.')
+            pass
 
     def search_by_book(self):
         """
@@ -127,5 +134,22 @@ class BookLendingSearchViewComponent:
         book = self.book_search_view.search()
         if book is None:
             pass
-        search_results = self.book_lending_operations.search_by_book(book)
-        return search_results
+
+        search_result = self.book_lending_operations.search_by_book(book)
+        if len(search_result) > 1:
+            index = self.pick_index_from_list(search_result)
+            book_lending = search_result[index - 1]
+            return book_lending
+        elif len(search_result) == 1:
+            return search_result[0]
+        else:
+            print('There are no lendings of this book.')
+            pass
+
+    @staticmethod
+    def pick_index_from_list(search_result):
+        print(search_result)
+        index = int(input('Please pick book_lending from the list (enter number): '))
+        if len(search_result) < index:
+            pass
+        return int(index)
