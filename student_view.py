@@ -14,7 +14,7 @@ class StudentView:
     def add(self):
         name = input('Type name of student you want to add: ')
         surname = input('Type surname of student you want to add: ')
-        pesel = int(input('Type pesel of student you want to add: '))
+        pesel = input('Type pesel of student you want to add: ')
         student = self.student_operations.add(name, pesel, surname)
         print('Student', student.name, student.surname, 'successfully added!')
         pass
@@ -26,8 +26,7 @@ class StudentView:
             self.student_operations.delete(student)
             print('Student ', student.name, student.surname, ' was successfully deleted.')
         else:
-            print('No such student.')
-        pass
+            pass
 
 
 class StudentSearchViewComponent:
@@ -37,11 +36,13 @@ class StudentSearchViewComponent:
     def search(self):
         data = input("Please type student's full name, surname, ID or pesel number: ")
         search_result = self.student_operations.search(data)
-        if len(search_result) > 1:
+
+        if len(search_result) > 1:  # TODO len(None) gives error
             index = self.pick_index_from_list(search_result)
             student = search_result[index - 1]
             return student
         elif len(search_result) == 1:
+            print('Found student:', search_result[0])
             return search_result[0]
         else:
             print('There is no such student in the library.')

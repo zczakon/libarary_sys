@@ -18,35 +18,37 @@ class StudentOperations:
         self.data_repository.delete_student(to_delete)
         pass
 
-    def search(self, data):
-        student_list = self.list()
-        for student in student_list:
-            if student.full_name in self.search_by_fullname(data):
-                return student
-            elif student.surname in self.search_by_surname(data):
-                return student
-            elif student.pesel == data:
-                return student
-            elif student.id == data:
-                return student
-            else:
-                pass
+    def search(self, data):  # TODO remove duplicates?
+        result = self.search_by_pesel(data) + self.search_by_name(data) \
+                 + self.search_by_surname(data) + self.search_by_fullname(data) + self.search_by_id(data)
+        return result
 
-    def search_by_fullname(self, student_full_name: str):
-        search_results = []
+    def search_by_pesel(self, pesel):
         student_list = self.list()
-        for student in student_list:
-            if (student.name + ' ' + student.surname) == student_full_name:
-                search_results.append(student)
-        return search_results
+        # print('student list', student_list)  # remove
+        search_result = [student for student in student_list if student.pesel == pesel]
+        # print('search result by pesel: ', search_result)  # remove
+        return search_result
+
+    def search_by_fullname(self, fullname):
+        student_list = self.list()
+        search_result = [student for student in student_list if student.fullname == fullname]
+        return search_result
 
     def search_by_surname(self, surname):
-        search_results = []
         student_list = self.list()
-        for student in student_list:
-            if student.surname == surname:
-                search_results.append(student)
-        return search_results
+        search_result = [student for student in student_list if student.surname == surname]
+        return search_result
+
+    def search_by_name(self, name):
+        student_list = self.list()
+        search_result = [student for student in student_list if student.name == name]
+        return search_result
+
+    def search_by_id(self, student_id):
+        student_list = self.list()
+        search_result = [student for student in student_list if student.id == student_id]
+        return search_result
 
     @staticmethod
     def set_name(new_name, student):
@@ -65,7 +67,7 @@ class StudentOperations:
 
 class BookOperations:
 
-    def __init__(self, data_repository: DataRepository):
+    def __init__(self, data_repository):
         self.data_repository = data_repository
 
     def add(self, author, isbn, title):
@@ -84,39 +86,29 @@ class BookOperations:
         pass
 
     def search(self, data):
+        result = self.search_by_title(data) + self.search_by_author(data) + self.search_by_isbn(data) + \
+                 self.search_by_id
+        return result
+
+    def search_by_id(self, book_id):
         book_list = self.list()
-        for book in book_list:
-            if book in self.search_by_title(data):
-                return book
-            elif book in self.search_by_author(data):
-                return book
-            elif book in self.search_by_isbn(data):
-                return book
-            elif book.id == data:
-                return book
-            else:
-                pass
+        search_result = [book for book in book_list if book.id == book_id]
+        return search_result
 
     def search_by_title(self, title):
-        search_results = []
-        for book in self.list():
-            if book.title == title:
-                search_results.append(book)
-        return search_results
+        book_list = self.list()
+        search_result = [book for book in book_list if book.title == title]
+        return search_result
 
     def search_by_author(self, author):
-        search_results = []
-        for book in self.list():
-            if book.author == author:
-                search_results.append(book)
-        return search_results
+        book_list = self.list()
+        search_result = [book for book in book_list if book.author == author]
+        return search_result
 
     def search_by_isbn(self, isbn):
-        search_results = []
-        for book in self.list():
-            if book.isbn == isbn:
-                search_results.append(book)
-        return search_results
+        book_list = self.list()
+        search_result = [book for book in book_list if book.isbn == isbn]
+        return search_result
 
     @staticmethod
     def set_title(book, new_title):
@@ -135,11 +127,14 @@ class BookOperations:
 
 
 class BookLendingOperations:
+    data_repository: DataRepository
+
     def __init__(self, data_repository):
         self.data_repository = data_repository
 
-    def search(self):
-        pass
+    def search(self, data):
+        result = self.search_by_student(data) + self.search_by_book(data)
+        return result
 
     def search_by_student(self, student):
         return self.data_repository.lendings_per_student(student)

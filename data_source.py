@@ -7,6 +7,7 @@ class DataRepository:
 
     def add_student(self, student):
         self.student_list.append(student)
+        # print('Current student list:', self.student_list)  # remove
         pass
 
     def delete_student(self, student):

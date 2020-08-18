@@ -1,5 +1,10 @@
+from book_view import BookSearchViewComponent
+from student_view import StudentSearchViewComponent
+
+
 class BookLendingView:
-    def __init__(self, book_lending_operations, book_search_view, student_search_view):
+    def __init__(self, book_lending_operations, book_search_view: BookSearchViewComponent,
+                 student_search_view: StudentSearchViewComponent):
         self.book_lending_operations = book_lending_operations
         self.book_lending_search_view_component = BookLendingSearchViewComponent(
             student_search_view, book_search_view, book_lending_operations)
@@ -42,7 +47,7 @@ class BookLendingView:
         elif selection is '5':
             self.see_overdue()
         else:
-            print('Wrong option selected')
+            print('Wrong selection! ')
         pass
 
     def check_rental_time(self):
@@ -106,7 +111,8 @@ class BookLendingSearchViewComponent:
             return self.search_by_student()
         if selection is '2':
             return self.search_by_book()
-        pass
+        else:
+            print('Wrong selection! ')
 
     def search_by_student(self):
         """
@@ -125,7 +131,7 @@ class BookLendingSearchViewComponent:
             return search_result[0]
         else:
             print('There are no book lendings for this student.')
-            pass
+            return []
 
     def search_by_book(self):
         """
@@ -144,7 +150,7 @@ class BookLendingSearchViewComponent:
             return search_result[0]
         else:
             print('There are no lendings of this book.')
-            pass
+            return []
 
     @staticmethod
     def pick_index_from_list(search_result):

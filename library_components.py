@@ -7,20 +7,19 @@ from accounts import Account, Role
 class Student:
     books_lent: List
 
-    def __init__(self, name: str, surname: str, pesel: int):
-        assert isinstance(name, str)
+    def __init__(self, name, surname, pesel):
         self.name = name
-        assert isinstance(surname, str)
         self.surname = surname
         self.pesel = pesel
         self.id = id(self)
         self.account = Account(Role("user"))
         self.registration_date = datetime.date.today()
         self.lendings = []
+        self.fullname = str(self.name) + ' ' + str(self.surname)
 
     def __str__(self):
-        return self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel), 'ID: ' + str(self.id), 'role: ' + str(
-            self.account)
+        return '({}, {}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
+                                         'ID:' + str(self.id), 'role: ' + str(self.account.get_role()))
 
     def get_name(self):
         return self.name
@@ -70,14 +69,15 @@ class Student:
 
 
 class Book:
-    def __init__(self, isbn: int, title: str, author: str):
+    def __init__(self, isbn, title, author):
         self.isbn = isbn
         self.title = title
         self.author = author
         self.id = id(self)
 
     def __str__(self):
-        return self.title, 'author: ' + self.author, 'ISBN: ' + str(self.isbn), 'ID: ' + str(self.id)
+        return '({}, {}, {}, {})'.format(str(self.title), 'author: ' + self.author, 'ISBN: ' +
+                                         str(self.isbn), 'ID: ' + str(self.id))
 
     def get_isbn(self):
         return self.isbn
@@ -102,7 +102,6 @@ class Book:
 
 
 class BookLending:
-    id: int
     return_date: datetime
     return_time = 30
 
@@ -115,8 +114,9 @@ class BookLending:
         self.return_date = None
 
     def __str__(self):
-        return str(self.book), str(self.student), 'creation date :' + str(self.creation_date), \
-               'return date: ' + str(self.return_date)
+        return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date :'
+                                         + str(self.creation_date), 'return date: ' +
+                                         str(self.return_date))
 
     def is_overdue(self):
         if self.return_date is not None:

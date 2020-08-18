@@ -21,8 +21,8 @@ def main():
     book_view = BookView(book_operations, student_search_view)
 
     book_lending_search_view = BookLendingSearchViewComponent(student_search_view, book_search_view,
-                                                              book_lending_operations)
-    book_lending_view = BookLendingView(book_lending_operations, book_lending_search_view, book_search_view)
+                                                              book_lending_operations)  # TODO should be used
+    book_lending_view = BookLendingView(book_lending_operations, book_search_view, student_search_view)
 
     print('Hello and welcome to The Library. Choose your action from the menu: ')
     menu: Dict[str, str] = {'1': 'Add Student', '2': 'Delete Student', '3': 'Add Book', '4': 'Delete Book',

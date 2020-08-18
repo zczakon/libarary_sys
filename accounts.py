@@ -8,7 +8,7 @@ class Role:
         self.id = id(self)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_name(self):
         return self.name
