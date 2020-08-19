@@ -1,11 +1,9 @@
 import datetime
 from datetime import timedelta
-from typing import List
 from accounts import Account, Role
 
 
 class Student:
-    books_lent: List
 
     def __init__(self, name, surname, pesel):
         self.name = name
@@ -14,7 +12,6 @@ class Student:
         self.id = id(self)
         self.account = Account(Role("user"))
         self.registration_date = datetime.date.today()
-        self.lendings = []
         self.fullname = str(self.name) + ' ' + str(self.surname)
 
     def __str__(self):
@@ -42,25 +39,6 @@ class Student:
 
     def get_reg_date(self):
         return self.registration_date
-
-    def get_books_lent(self):
-        return self.books_lent
-
-    def lend_book(self, book):
-        """
-        returns BookLending instance
-        """
-        self.lendings.append(BookLending(self, book))
-        pass
-
-    def return_book(self, book):
-        """
-        deletes from books_lent list the book
-        """
-        for lending in self.lendings:
-            if lending.book == book:
-                lending.set_return_date(datetime.date.today())
-        pass
 
     def set_name(self, new_name):
         self.name = new_name

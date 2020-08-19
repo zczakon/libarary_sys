@@ -3,7 +3,7 @@ class DataRepository:
     def __init__(self, student_list, book_list):
         self.student_list = student_list
         self.book_list = book_list
-        self.lending_history = [student.lendings for student in student_list]
+        self.lending_history = []
 
     def add_student(self, student):
         self.student_list.append(student)

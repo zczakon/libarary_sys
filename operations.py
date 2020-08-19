@@ -1,4 +1,6 @@
-from domain_objects import Student, Book
+from datetime import datetime
+
+from domain_objects import Student, Book, BookLending
 
 
 class StudentOperations:
@@ -79,6 +81,9 @@ class BookOperations:
     def list_available(self):
         return self.data_repository.get_available_book_list()
 
+    def list_pending(self):
+        return self.data_repository.pending_book_list()
+
     def delete(self, to_delete):
         self.data_repository.delete_book(to_delete)
         pass
@@ -120,8 +125,15 @@ class BookOperations:
     def set_isbn(book, new_isbn):
         book.set_isbn(new_isbn)
 
-    def list_pending(self):
-        return self.data_repository.pending_book_list()
+    def lend_book(self, student, book):
+        book_lending = BookLending(student, book)
+        self.data_repository.lending_history.append(book_lending)
+
+    def return_book(self, book):
+        for lending in self.data_repository.lending_history:
+            if lending.book == book:
+                lending.set_return_date(datetime.date.today())
+                pass
 
 
 class BookLendingOperations:

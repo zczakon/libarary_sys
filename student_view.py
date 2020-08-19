@@ -45,7 +45,10 @@ class StudentSearchViewComponent:
     def search(self):
         data = input("Please type student's full name, name, surname, ID or pesel number: ")
         search_result = self.student_operations.search(data)
-        print('Search result:', search_result)
+        if search_result:
+            print('Search result:', search_result)
+        else:
+            print('No such student.')
         return search_result
 
     def pick_single(self, search_result):

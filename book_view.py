@@ -19,7 +19,7 @@ class BookView:
     def add(self):
         title = input('Type title of the book you want to add: ')
         author = input('Type author of the book you want to add: ')
-        isbn = int(input('Type ISBN number of the book you want to add: '))
+        isbn = input('Type ISBN number of the book you want to add: ')
         self.book_operations.add(title, author, isbn)
         pass
 
@@ -33,17 +33,24 @@ class BookView:
 
     def lend(self):
         student = self.student_search_view.search()
+        if not student:
+            pass
+
         print('Which book do you want to lend delete? ')
         book = self.search()
         available_book_list = self.book_operations.list_available()
 
         if book in available_book_list:
             student.lend_book(book)
-            pass
+        else:
+            print('Book is currently unavailable.')
         pass
 
     def return_book(self):
         student = self.student_search_view.search()
+        if not student:
+            pass
+
         to_return = input('Which book do you want to return? ')
         book = self.book_operations.search(to_return)
         pending_book_list = self.book_operations.list_pending()
@@ -51,7 +58,8 @@ class BookView:
         if book in pending_book_list:
             student.return_book(book)
             print('"' + book.title + '"', 'was successfully returned')
-            pass
+        else:
+            print('Book has already been returned.')
         pass
 
 

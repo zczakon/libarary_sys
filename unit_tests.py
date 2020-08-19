@@ -46,8 +46,19 @@ class TestStudentSearchOperations(unittest.TestCase):
 
 class TestBookOperations(unittest.TestCase):
     book = Book(1010101010333, 'Ulysses', 'James Joyce')
-    data_repository = DataRepository([], [book])
+    student = Student('Zuzia', 'Czakon', 123)
+    data_repository = DataRepository([student], [book])
     book_operations = BookOperations(data_repository)
+    student_operations = StudentOperations(data_repository)
 
     def test_search_by_id(self):
         self.assertEqual(self.book_operations.search_by_id(id(self.book)), [self.book])
+
+    def test_list_available(self):
+        self.assertEqual(self.book_operations.list_available(), self.data_repository.get_book_list())
+        self.student.lend_book(self.book)
+        self.assertEqual(self.book_operations.list_available(), [])
+        pass
+
+    def test_list_pending(self):
+        pass
