@@ -110,52 +110,44 @@ class BookLendingSearchViewComponent:
         if selection is '1':
             return self.search_by_student()
         if selection is '2':
-            return self.search_by_book()
+            return self.search_lending_by_book()
         else:
             print('Wrong selection! ')
 
     def search_by_student(self):
-        """
-        :return: list of lendings per student
-        """
-        student = self.student_search_view.search()
+        student = self.student_search_view.search_single()
         if student is None:
             pass
 
         search_result = self.book_lending_operations.search_by_student(student)
-        if len(search_result) > 1:
-            index = self.pick_index_from_list(search_result)
-            book_lending = search_result[index - 1]
-            return book_lending
-        elif len(search_result) == 1:
-            return search_result[0]
-        else:
-            print('There are no book lendings for this student.')
-            return []
+        lending = self.pick_single(search_result)
+        return lending
 
-    def search_by_book(self):
-        """
-        :return: list of lendings per book
-        """
-        book = self.book_search_view.search()
+    def search_lending_by_book(self):
+        book = self.book_search_view.search_single()
         if book is None:
             pass
 
         search_result = self.book_lending_operations.search_by_book(book)
-        if len(search_result) > 1:
-            index = self.pick_index_from_list(search_result)
-            book_lending = search_result[index - 1]
-            return book_lending
-        elif len(search_result) == 1:
-            return search_result[0]
-        else:
-            print('There are no lendings of this book.')
-            return []
+        lending = self.pick_single(search_result)
+        return lending
 
     @staticmethod
     def pick_index_from_list(search_result):
         print(search_result)
-        index = int(input('Please pick book_lending from the list (enter number): '))
+        index = int(input('Please pick book lending from the list (enter number): '))
         if len(search_result) < index:
             pass
         return int(index)
+
+    def pick_single(self, search_result):
+        if len(search_result) > 1:  # TODO len(None) gives error
+            index = self.pick_index_from_list(search_result)
+            book = search_result[index - 1]
+            print('Found book lending:', book)
+            return book
+        elif len(search_result) == 1:
+            print('Found book lending:', search_result[0])
+            return search_result[0]
+        else:
+            print('There are no such lendings.')
