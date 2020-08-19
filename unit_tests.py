@@ -56,9 +56,12 @@ class TestBookOperations(unittest.TestCase):
 
     def test_list_available(self):
         self.assertEqual(self.book_operations.list_available(), self.data_repository.get_book_list())
-        self.student.lend_book(self.book)
+        self.book_operations.lend_book(self.student, self.book)
         self.assertEqual(self.book_operations.list_available(), [])
         pass
 
     def test_list_pending(self):
-        pass
+        self.book_operations.lend_book(self.student, self.book)
+        self.assertEqual(self.book_operations.list_pending(), [self.book])
+        self.book_operations.return_book(self.book)
+        self.assertEqual(self.book_operations.list_pending(), [])
