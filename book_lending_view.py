@@ -23,7 +23,7 @@ class BookLendingView:
             print(entry, menu[entry])
         pass
 
-    def display_lending_history(self) -> list:
+    def list_flat_lending_history(self) -> list:
         flat_lending_history = self.book_lending_operations.flatten_lending_history()
         print(flat_lending_history)
         return flat_lending_history
@@ -51,13 +51,13 @@ class BookLendingView:
         pass
 
     def check_rental_time(self):
-        lending_history: list = self.display_lending_history()
+        lending_history: list = self.list_flat_lending_history()
         index = self.ask_for_book_lending_index()
         self.book_lending_operations.check_rental_time(lending_history[index - 1])
         pass
 
     def check_remaining_days(self):
-        lending_history: list = self.display_lending_history()
+        lending_history: list = self.list_flat_lending_history()
         index = self.ask_for_book_lending_index()
         remaining_days = lending_history[index - 1].remaining_days()
         if remaining_days:
@@ -66,7 +66,7 @@ class BookLendingView:
         pass
 
     def check_return_date(self):
-        lending_history: list = self.display_lending_history()
+        lending_history: list = self.list_flat_lending_history()
         index = self.ask_for_book_lending_index()
         return_date = lending_history[index - 1].get_return_date()
         if return_date is None:
@@ -75,7 +75,7 @@ class BookLendingView:
         return return_date
 
     def check_creation_date(self):
-        lending_history: list = self.display_lending_history()
+        lending_history: list = self.list_flat_lending_history()
         index = self.ask_for_book_lending_index()
         creation_date = lending_history[index - 1].get_creation_date()
         return creation_date

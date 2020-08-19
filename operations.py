@@ -127,8 +127,6 @@ class BookOperations:
 
 
 class BookLendingOperations:
-    data_repository: DataRepository
-
     def __init__(self, data_repository):
         self.data_repository = data_repository
 

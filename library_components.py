@@ -21,6 +21,10 @@ class Student:
         return '({}, {}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
                                          'ID:' + str(self.id), 'role: ' + str(self.account.get_role()))
 
+    def __repr__(self):
+        return '({}, {}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
+                                         'ID:' + str(self.id), 'role: ' + str(self.account.get_role()))
+
     def get_name(self):
         return self.name
 
@@ -79,6 +83,10 @@ class Book:
         return '({}, {}, {}, {})'.format(str(self.title), 'author: ' + self.author, 'ISBN: ' +
                                          str(self.isbn), 'ID: ' + str(self.id))
 
+    def __repr__(self):
+        return '({}, {}, {}, {})'.format(str(self.title), 'author: ' + self.author, 'ISBN: ' +
+                                         str(self.isbn), 'ID: ' + str(self.id))
+
     def get_isbn(self):
         return self.isbn
 
@@ -114,6 +122,11 @@ class BookLending:
         self.return_date = None
 
     def __str__(self):
+        return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date :'
+                                         + str(self.creation_date), 'return date: ' +
+                                         str(self.return_date))
+
+    def __repr__(self):
         return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date :'
                                          + str(self.creation_date), 'return date: ' +
                                          str(self.return_date))

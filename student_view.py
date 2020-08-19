@@ -34,9 +34,12 @@ class StudentSearchViewComponent:
         self.student_operations = student_operations
 
     def search(self):
-        data = input("Please type student's full name, surname, ID or pesel number: ")
+        data = input("Please type student's full name, name, surname, ID or pesel number: ")
         search_result = self.student_operations.search(data)
+        student = self.pick_single(search_result)
+        return student
 
+    def pick_single(self, search_result):
         if len(search_result) > 1:  # TODO len(None) gives error
             index = self.pick_index_from_list(search_result)
             student = search_result[index - 1]
@@ -46,7 +49,6 @@ class StudentSearchViewComponent:
             return search_result[0]
         else:
             print('There is no such student in the library.')
-            pass
 
     @staticmethod
     def pick_index_from_list(search_result):
