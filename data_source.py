@@ -38,18 +38,12 @@ class DataRepository:
         return self.lending_history
 
     def lendings_per_student(self, student):
-        for i in range(len(self.lending_history)):
-            if self.lending_history[i] == student.lendings:  # student.lendings -> self.lendings should be created
-                # instead of books_lent
-                return student.lendings
+        student_lendings = [lending for lending in self.lending_history if lending.student == student]
+        return student_lendings
 
     def lendings_per_book(self, book):
-        lendings_of_book = []
-        for i in range(len(self.lending_history)):
-            for lending in self.lending_history[i]:  # is a list of book lendings
-                if lending.book == book:
-                    lendings_of_book.append(lending)
-        return lendings_of_book
+        books_lendings = [lending for lending in self.lending_history if lending.book == book]
+        return books_lendings
 
     def pending_book_list(self):
         pending = self.book_list

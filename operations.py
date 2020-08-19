@@ -157,15 +157,6 @@ class BookLendingOperations:
     def list(self):
         return self.data_repository.get_lending_history()
 
-    def flatten_lending_history(self):
-        lending_history = self.list()
-        flat_list = []
-        for sublist in lending_history:
-            for item in sublist:
-                flat_list.append(item)
-        print(flat_list)
-        return flat_list
-
     @staticmethod
     def check_rental_time(book_lending):
         return book_lending.rental_time()
