@@ -1,4 +1,4 @@
-from library_components import Student, Book
+from domain_objects import Student, Book
 
 
 class StudentOperations:
@@ -13,8 +13,7 @@ class StudentOperations:
     def list(self):
         return self.data_repository.get_student_list()
 
-    def delete(self, student_name_surname):
-        to_delete = self.search(student_name_surname)
+    def delete(self, to_delete):
         self.data_repository.delete_student(to_delete)
         pass
 
@@ -80,14 +79,13 @@ class BookOperations:
     def list_available(self):
         return self.data_repository.get_available_book_list()
 
-    def delete(self, title):
-        to_delete = self.search(title)
+    def delete(self, to_delete):
         self.data_repository.delete_book(to_delete)
         pass
 
     def search(self, data):
         result = self.search_by_title(data) + self.search_by_author(data) + self.search_by_isbn(data) + \
-                 self.search_by_id
+                 self.search_by_id(data)
         return result
 
     def search_by_id(self, book_id):

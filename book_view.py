@@ -9,24 +9,26 @@ class BookView:
         self.edit_view_component.edit()
 
     def search(self):
-        book = self.search_view_component.search()
+        result_list = self.search_view_component.search()
+        return result_list
+
+    def search_single(self):
+        book = self.search_view_component.search_single()
         return book
 
     def add(self):
-        isbn = int(input('Type ISBN number of the book you want to add: '))
         title = input('Type title of the book you want to add: ')
         author = input('Type author of the book you want to add: ')
-        self.book_operations.add(author, isbn, title)
+        isbn = int(input('Type ISBN number of the book you want to add: '))
+        self.book_operations.add(title, author, isbn)
         pass
 
     def delete(self):
         print('Which book do you want to delete? ')
-        book = self.search()
-        if book:
-            self.book_operations.delete(book)
-            print('Book', '"' + book.title + '"', 'was successfully deleted.')
-        else:
-            print('No such book.')
+        book_to_delete = self.search_single()
+        if book_to_delete:
+            self.book_operations.delete(book_to_delete)
+            print('Book', book_to_delete, 'was successfully deleted.')
         pass
 
     def lend(self):
@@ -57,18 +59,29 @@ class BookSearchViewComponent:
     def __init__(self, book_operations):
         self.book_operations = book_operations
 
+    def search_single(self):
+        data = input("Please type book's title, author, ID or ISBN number: ")
+        search_result = self.book_operations.search(data)
+        book = self.pick_single(search_result)
+        return book
+
     def search(self):
         data = input("Please type book's title, author, ID or ISBN number: ")
         search_result = self.book_operations.search(data)
-        if len(search_result) > 1:
+        print('Search result:', search_result)
+        return search_result
+
+    def pick_single(self, search_result):
+        if len(search_result) > 1:  # TODO len(None) gives error
             index = self.pick_index_from_list(search_result)
             book = search_result[index - 1]
+            print('Found book:', book)
             return book
         elif len(search_result) == 1:
+            print('Found book:', search_result[0])
             return search_result[0]
         else:
             print('There is no such book in the library.')
-            pass
 
     @staticmethod
     def pick_index_from_list(search_result):

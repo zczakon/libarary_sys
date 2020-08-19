@@ -1,7 +1,7 @@
 import unittest
 
 from data_source import DataRepository
-from library_components import Student, Book
+from domain_objects import Student, Book
 from operations import StudentOperations, BookOperations
 
 

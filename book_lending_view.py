@@ -121,6 +121,7 @@ class BookLendingSearchViewComponent:
 
         search_result = self.book_lending_operations.search_by_student(student)
         lending = self.pick_single(search_result)
+        print('Search result:', search_result)
         return lending
 
     def search_lending_by_book(self):
@@ -130,6 +131,7 @@ class BookLendingSearchViewComponent:
 
         search_result = self.book_lending_operations.search_by_book(book)
         lending = self.pick_single(search_result)
+        print('Search result:', search_result)
         return lending
 
     @staticmethod

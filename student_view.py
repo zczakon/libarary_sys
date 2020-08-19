@@ -8,7 +8,11 @@ class StudentView:
         self.edit_view_component.edit()
 
     def search(self):
-        student = self.search_view_component.search()
+        result_list = self.search_view_component.search()
+        return result_list
+
+    def search_single(self):
+        student = self.search_view_component.search_single()
         return student
 
     def add(self):
@@ -21,28 +25,34 @@ class StudentView:
 
     def delete(self):
         print('Which student do you want to delete? ')
-        student = self.search()
-        if student:
-            self.student_operations.delete(student)
-            print('Student ', student.name, student.surname, ' was successfully deleted.')
-        else:
-            pass
+        student_to_delete = self.search_single()
+        if student_to_delete:
+            self.student_operations.delete(student_to_delete)
+            print('Student ', student_to_delete, ' was successfully deleted.')
+        pass
 
 
 class StudentSearchViewComponent:
     def __init__(self, student_operations):
         self.student_operations = student_operations
 
-    def search(self):
+    def search_single(self):
         data = input("Please type student's full name, name, surname, ID or pesel number: ")
         search_result = self.student_operations.search(data)
         student = self.pick_single(search_result)
         return student
 
+    def search(self):
+        data = input("Please type student's full name, name, surname, ID or pesel number: ")
+        search_result = self.student_operations.search(data)
+        print('Search result:', search_result)
+        return search_result
+
     def pick_single(self, search_result):
         if len(search_result) > 1:  # TODO len(None) gives error
             index = self.pick_index_from_list(search_result)
             student = search_result[index - 1]
+            print('Found student:', student)
             return student
         elif len(search_result) == 1:
             print('Found student:', search_result[0])
