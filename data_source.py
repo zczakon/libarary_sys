@@ -46,24 +46,13 @@ class DataRepository:
         return books_lendings
 
     def pending_book_list(self):
-        pending = self.book_list
-        for lending in self.lending_history:
-            if lending.return_date is None:
-                pending.remove(lending.book)
+        pending = [lending.book for lending in self.lending_history if lending.return_date is None]
         return pending
 
     def available_book_list(self):
-        available = self.book_list
-        pending: list = self.pending_book_list()
-        for book in self.book_list:
-            if book in pending:
-                available.remove(book)
+        available = [book for book in self.book_list if book not in self.pending_book_list]
         return available
 
-    def overdue_book_list(self, lending_history):
-        self.lending_history = lending_history
-        overdue_lendings = []
-        for book_lending in self.lending_history:
-            if book_lending.is_overdue():
-                overdue_lendings.append(book_lending)
+    def overdue_book_list(self):
+        overdue_lendings = [lending for lending in self.lending_history if lending.is_overdue()]
         return overdue_lendings
