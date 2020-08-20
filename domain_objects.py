@@ -1,5 +1,4 @@
 import datetime
-from datetime import timedelta
 from accounts import Account, Role
 
 
@@ -88,7 +87,6 @@ class Book:
 
 
 class BookLending:
-    return_date: datetime
     return_time = 30
 
     def __init__(self, student: Student, book: Book):
@@ -96,11 +94,11 @@ class BookLending:
         self.book = book
         self.id = id(self)
         self.creation_date = datetime.date.today()
-        self.max_return_date = datetime.date.today() + timedelta(days=self.return_time)
+        self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)
         self.return_date = None
 
     def __str__(self):
-        return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date :'
+        return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date: '
                                          + str(self.creation_date), 'return date: ' +
                                          str(self.return_date))
 
@@ -110,7 +108,7 @@ class BookLending:
                                          str(self.return_date))
 
     def is_overdue(self):
-        if self.return_date is not None:
+        if self.return_date is None:
             return datetime.date.today() > self.max_return_date
 
     def rental_time(self):
@@ -142,3 +140,6 @@ class BookLending:
 
     def set_return_date(self, return_date):
         self.return_date = return_date
+
+    def set_creation_date(self, creation_date):
+        self.creation_date = creation_date

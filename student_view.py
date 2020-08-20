@@ -52,7 +52,7 @@ class StudentSearchViewComponent:
         return search_result
 
     def pick_single(self, search_result):
-        if len(search_result) > 1:  # TODO len(None) gives error
+        if len(search_result) > 1:
             index = self.pick_index_from_list(search_result)
             student = search_result[index - 1]
             print('Found student:', student)

@@ -3,7 +3,7 @@ from typing import Dict
 from data_source import DataRepository
 from book_view import BookView, BookSearchViewComponent
 from student_view import StudentView, StudentSearchViewComponent
-from book_lending_view import BookLendingView, BookLendingSearchViewComponent
+from book_lending_view import BookLendingView
 from operations import StudentOperations, BookOperations, BookLendingOperations
 
 
@@ -20,8 +20,6 @@ def main():
     book_search_view = BookSearchViewComponent(book_operations)
     book_view = BookView(book_operations, student_search_view)
 
-    book_lending_search_view = BookLendingSearchViewComponent(student_search_view, book_search_view,
-                                                              book_lending_operations)  # TODO should be used
     book_lending_view = BookLendingView(book_lending_operations, book_search_view, student_search_view)
 
     print('Hello and welcome to The Library. Choose your action from the menu: ')
@@ -60,7 +58,7 @@ def main():
         elif selection == '11':
             book_lending_view.search()
         elif selection == '12':
-            book_lending_view.see_overdue()
+            book_lending_view.list_overdue()
         elif selection == '13':
             book_lending_view.check_date_time()
         elif selection == '14':

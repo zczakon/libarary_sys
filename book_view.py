@@ -32,31 +32,32 @@ class BookView:
         pass
 
     def lend(self):
-        student = self.student_search_view.search()
+        student = self.student_search_view.search_single()
         if not student:
             pass
 
-        print('Which book do you want to lend delete? ')
-        book = self.search()
+        print('Which book do you want to lend?')
+        book = self.search_single()
         available_book_list = self.book_operations.list_available()
 
         if book in available_book_list:
-            student.lend_book(book)
+            book_lending = self.book_operations.lend_book(student, book)
+            print('Created book lending:', book_lending)
         else:
             print('Book is currently unavailable.')
         pass
 
     def return_book(self):
-        student = self.student_search_view.search()
-        if not student:
-            pass
+        # student = self.student_search_view.search()
+        # if not student:
+        #    pass
 
-        to_return = input('Which book do you want to return? ')
-        book = self.book_operations.search(to_return)
+        print('Which book do you want to return?')
+        book = self.search_single()
         pending_book_list = self.book_operations.list_pending()
 
         if book in pending_book_list:
-            student.return_book(book)
+            self.book_operations.return_book(book)
             print('"' + book.title + '"', 'was successfully returned')
         else:
             print('Book has already been returned.')
@@ -80,7 +81,7 @@ class BookSearchViewComponent:
         return search_result
 
     def pick_single(self, search_result):
-        if len(search_result) > 1:  # TODO len(None) gives error
+        if len(search_result) > 1:
             index = self.pick_index_from_list(search_result)
             book = search_result[index - 1]
             print('Found book:', book)

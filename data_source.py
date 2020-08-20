@@ -7,7 +7,6 @@ class DataRepository:
 
     def add_student(self, student):
         self.student_list.append(student)
-        # print('Current student list:', self.student_list)  # remove
         pass
 
     def delete_student(self, student):
@@ -28,12 +27,6 @@ class DataRepository:
     def get_book_list(self):
         return self.book_list
 
-    def get_available_book_list(self):
-        return self.available_book_list()
-
-    def get_pending_book_list(self):
-        return self.pending_book_list()
-
     def get_lending_history(self):
         return self.lending_history
 
@@ -50,9 +43,15 @@ class DataRepository:
         return pending
 
     def available_book_list(self):
-        available = [book for book in self.book_list if book not in self.pending_book_list]
+        available = [book for book in self.book_list if self.is_lent(book) is False]
         return available
 
     def overdue_book_list(self):
         overdue_lendings = [lending for lending in self.lending_history if lending.is_overdue()]
         return overdue_lendings
+
+    def is_lent(self, book):
+        for lending in self.lending_history:
+            if lending.book == book and lending.return_date is None:
+                return True
+        return False

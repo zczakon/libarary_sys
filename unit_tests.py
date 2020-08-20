@@ -2,7 +2,8 @@ import unittest
 
 from data_source import DataRepository
 from domain_objects import Student, Book
-from operations import StudentOperations, BookOperations
+from operations import StudentOperations, BookOperations, BookLendingOperations
+import datetime
 
 
 class TestStudentSearchOperations(unittest.TestCase):
@@ -65,3 +66,31 @@ class TestBookOperations(unittest.TestCase):
         self.assertEqual(self.book_operations.list_pending(), [self.book])
         self.book_operations.return_book(self.book)
         self.assertEqual(self.book_operations.list_pending(), [])
+
+
+class TestBookLendingOperations(unittest.TestCase):
+    book = Book(1010101010333, 'Ulysses', 'James Joyce')
+    student = Student('Zuzia', 'Czakon', 123)
+    data_repository = DataRepository([student], [book])
+    book_operations = BookOperations(data_repository)
+    student_operations = StudentOperations(data_repository)
+    book_lending_operations = BookLendingOperations(data_repository)
+
+    def test_list_overdue(self):
+        book_lending = self.book_operations.lend_book(self.student, self.book)
+        self.assertEqual(self.book_lending_operations.list_overdue(), [])
+        book_lending.set_creation_date(datetime.date(2010, 12, 21))
+        book_lending.max_return_date = book_lending.get_creation_date() + datetime.timedelta(days=30)
+        self.assertEqual(self.book_lending_operations.list_overdue(), [book_lending])
+
+    def test_is_overdue(self):
+        book_lending = self.book_operations.lend_book(self.student, self.book)
+        book_lending.set_creation_date(datetime.date.today() - datetime.timedelta(days=40))
+        book_lending.max_return_date = book_lending.get_creation_date() + datetime.timedelta(days=30)
+        print(book_lending.creation_date)
+        print(book_lending.max_return_date)
+        self.assertTrue(datetime.date.today() > book_lending.get_max_return_date())
+
+    def test_search_by_student(self):  # lendings_per_student ok
+        book_lending = self.book_operations.lend_book(self.student, self.book)
+        self.assertEqual(self.book_lending_operations.search_by_student(self.student), [book_lending])

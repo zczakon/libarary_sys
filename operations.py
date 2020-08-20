@@ -1,5 +1,4 @@
-from datetime import datetime
-
+import datetime
 from domain_objects import Student, Book, BookLending
 
 
@@ -71,15 +70,16 @@ class BookOperations:
     def __init__(self, data_repository):
         self.data_repository = data_repository
 
-    def add(self, author, isbn, title):
-        book = Book(isbn, title, author)
+    def add(self, title, author, isbn):
+        book = Book(title, author, isbn)
         self.data_repository.add_book(book)
+        # print(self.data_repository.get_book_list())
 
     def list(self):
         return self.data_repository.get_book_list()
 
     def list_available(self):
-        return self.data_repository.get_available_book_list()
+        return self.data_repository.available_book_list()
 
     def list_pending(self):
         return self.data_repository.pending_book_list()
@@ -128,6 +128,7 @@ class BookOperations:
     def lend_book(self, student, book):
         book_lending = BookLending(student, book)
         self.data_repository.lending_history.append(book_lending)
+        return book_lending
 
     def return_book(self, book):
         for lending in self.data_repository.lending_history:
@@ -142,17 +143,17 @@ class BookLendingOperations:
 
     def search(self, data):
         result = self.search_by_student(data) + self.search_by_book(data)
-        return result
+        return result1
 
     def search_by_student(self, student):
+        print('search_by_student in operations:', self.data_repository.lendings_per_student(student))
         return self.data_repository.lendings_per_student(student)
 
     def search_by_book(self, book):
         return self.data_repository.lendings_per_book(book)
 
-    def see_overdue(self):
-        lending_history = self.data_repository.get_lending_history()
-        return self.data_repository.overdue_book_list(lending_history)
+    def list_overdue(self):
+        return self.data_repository.overdue_book_list()
 
     def list(self):
         return self.data_repository.get_lending_history()

@@ -40,48 +40,51 @@ class BookLendingView:
         elif selection is '4':
             self.check_rental_time()
         elif selection is '5':
-            self.see_overdue()
+            self.list_overdue()
         else:
             print('Wrong selection! ')
         pass
 
     def check_rental_time(self):
-        lending_history: list = self.book_lending_operations.list()
-        index = self.ask_for_book_lending_index()
-        self.book_lending_operations.check_rental_time(lending_history[index - 1])
-        pass
+        book_lending = self.search()
+        rental_time = self.book_lending_operations.check_rental_time(book_lending)
+        print('Rental time:', rental_time)
+        return rental_time
 
     def check_remaining_days(self):
-        lending_history: list = self.book_lending_operations.list()
-        index = self.ask_for_book_lending_index()
-        remaining_days = lending_history[index - 1].remaining_days()
+        book_lending = self.search()
+        remaining_days = book_lending.remaining_days()
         if remaining_days:
+            print('Remaining days:', remaining_days)
             return remaining_days
         print('Book has already been returned! ')
         pass
 
     def check_return_date(self):
-        lending_history: list = self.book_lending_operations.list()
-        index = self.ask_for_book_lending_index()
-        return_date = lending_history[index - 1].get_return_date()
+        book_lending = self.search()
+        return_date = book_lending.get_return_date()
         if return_date is None:
             print('Book has not yet been returned!')
             pass
+        print('Return date:', return_date)
         return return_date
 
     def check_creation_date(self):
-        lending_history: list = self.book_lending_operations.list()
-        index = self.ask_for_book_lending_index()
-        creation_date = lending_history[index - 1].get_creation_date()
+        book_lending = self.search()
+        creation_date = book_lending.get_creation_date()
+        print('Creation date:', creation_date)
         return creation_date
 
-    def see_overdue(self):
+    def list_overdue(self):
         """
         :return: list of all overdue lendings
         """
-        print('All overdue lendings in the library: ')
-        self.book_lending_operations.see_overdue()
-        pass
+        overdue = self.book_lending_operations.list_overdue()
+        if overdue:
+            print('All overdue lendings in the library:', overdue)
+        else:
+            print('No overdue lendings.')
+        return overdue
 
 
 class BookLendingSearchViewComponent:
@@ -114,7 +117,7 @@ class BookLendingSearchViewComponent:
         if student is None:
             pass
 
-        search_result = self.book_lending_operations.search_by_student(student)
+        search_result = self.book_lending_operations.search_by_student(student)  # evals to []?
         lending = self.pick_single(search_result)
         print('Search result:', search_result)
         return lending
@@ -138,7 +141,7 @@ class BookLendingSearchViewComponent:
         return int(index)
 
     def pick_single(self, search_result):
-        if len(search_result) > 1:  # TODO len(None) gives error
+        if len(search_result) > 1:
             index = self.pick_index_from_list(search_result)
             book = search_result[index - 1]
             print('Found book lending:', book)
