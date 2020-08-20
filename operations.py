@@ -143,7 +143,7 @@ class BookLendingOperations:
 
     def search(self, data):
         result = self.search_by_student(data) + self.search_by_book(data)
-        return result1
+        return result
 
     def search_by_student(self, student):
         print('search_by_student in operations:', self.data_repository.lendings_per_student(student))
