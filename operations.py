@@ -21,7 +21,7 @@ class StudentOperations:
     def list(self):
         return self.data_repository.get_student_list()
 
-    def search(self, data):  # TODO remove duplicates?
+    def search(self, data):
         result = self.search_by_pesel(data) + self.search_by_name(data) \
                  + self.search_by_surname(data) + self.search_by_fullname(data) + self.search_by_id(data)
         return result
