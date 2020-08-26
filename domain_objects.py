@@ -1,17 +1,21 @@
 import datetime
-from accounts import Account, Role
+
+import data_source
+from accounts import Account, Role  # TODO make method creating student acc
+from pony.orm import *
 
 
-class Student:
+class Student(data_source.db.Entity):
+    name = Required(str)
+    surname = Required(str)
+    pesel = Required(str, unique=True)
+    registration_date = Required(datetime)
+    account = Optional(Account)
 
-    def __init__(self, name, surname, pesel):
-        self.name = name
-        self.surname = surname
-        self.pesel = pesel
-        self.id = id(self)
+    fullname = str(name) + ' ' + str(surname)
+
+    def create_account(self):
         self.account = Account(Role("user"))
-        self.registration_date = datetime.date.today()
-        self.fullname = str(self.name) + ' ' + str(self.surname)
 
     def __str__(self):
         return '({}, {}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
@@ -33,9 +37,6 @@ class Student:
     def get_id(self):
         return self.id
 
-    def get_account(self):
-        return self.account
-
     def get_reg_date(self):
         return self.registration_date
 
@@ -49,12 +50,10 @@ class Student:
         self.pesel = new_pesel
 
 
-class Book:
-    def __init__(self, title, author, isbn):
-        self.isbn = isbn
-        self.title = title
-        self.author = author
-        self.id = id(self)
+class Book(data_source.db.Entity):
+    isbn = Required(str)
+    title = Required(str)
+    author = Required(str)
 
     def __str__(self):
         return '({}, {}, {}, {})'.format(str(self.title), 'author: ' + self.author, 'ISBN: ' +
@@ -86,16 +85,18 @@ class Book:
         self.isbn = new_isbn
 
 
-class BookLending:
+class BookLending(data_source.db.Entity):
+    student = Required(Student)
+    book = Required(Book)
+    creation_date = Required(datetime)
+    max_return_date = Required(datetime)
+    return_date = Optional(datetime)
+
     return_time = 30
 
-    def __init__(self, student: Student, book: Book):
-        self.student = student
-        self.book = book
-        self.id = id(self)
+    def create(self):
         self.creation_date = datetime.date.today()
         self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)
-        self.return_date = None
 
     def __str__(self):
         return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date: '

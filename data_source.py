@@ -1,59 +1,55 @@
+from pony.orm import *
+
+from domain_objects import Student, Book, BookLending
+
+db = Database()
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+db.generate_mapping(create_tables=True)
 
 
 class DataRepository:
+    @staticmethod
+    def get_student_list():
+        student_list = select(student for student in Student.select())[:]
+        return student_list
 
-    def __init__(self, student_list, book_list):
-        self.student_list = student_list
-        self.book_list = book_list
-        self.lending_history = []
+    @staticmethod
+    def get_book_list():
+        book_list = select(book for book in Book.select())[:]
+        return book_list
 
-    def add_student(self, student):
-        self.student_list.append(student)
-        pass
+    @staticmethod
+    def get_lending_history():
+        lending_history = select(lending for lending in BookLending.select())[:]
+        return lending_history
 
-    def delete_student(self, student):
-        self.student_list.remove(student)
-        pass
-
-    def add_book(self, book):
-        self.book_list.append(book)
-        pass
-
-    def delete_book(self, book):
-        self.book_list.remove(book)
-        pass
-
-    def get_student_list(self):
-        return self.student_list
-
-    def get_book_list(self):
-        return self.book_list
-
-    def get_lending_history(self):
-        return self.lending_history
-
-    def lendings_per_student(self, student):
-        student_lendings = [lending for lending in self.lending_history if lending.student == student]
+    @staticmethod
+    def lendings_per_student(student):
+        student_lendings = select(lending for lending in BookLending.select() if lending.student == student)[:]
         return student_lendings
 
-    def lendings_per_book(self, book):
-        books_lendings = [lending for lending in self.lending_history if lending.book == book]
+    @staticmethod
+    def lendings_per_book(book):
+        books_lendings = select(lending for lending in BookLending.select() if lending.book == book)[:]
         return books_lendings
 
-    def pending_book_list(self):
-        pending = [lending.book for lending in self.lending_history if lending.return_date is None]
+    @staticmethod
+    def pending_book_list():
+        pending = select(lending.book for lending in BookLending.select() if lending.return_date is None)[:]
         return pending
 
     def available_book_list(self):
-        available = [book for book in self.book_list if self.is_lent(book) is False]
+        available = select(book for book in Book.select() if self.is_lent(book) is False)[:]
         return available
 
-    def overdue_book_list(self):
-        overdue_lendings = [lending for lending in self.lending_history if lending.is_overdue()]
+    @staticmethod
+    def overdue_book_list():
+        overdue_lendings = select(lending for lending in BookLending.select() if lending.is_overdue())[:]
         return overdue_lendings
 
     def is_lent(self, book):
-        for lending in self.lending_history:
+        lending_history = self.get_lending_history()
+        for lending in lending_history:
             if lending.book == book and lending.return_date is None:
                 return True
         return False

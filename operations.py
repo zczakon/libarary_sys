@@ -1,4 +1,5 @@
 import datetime
+from pony.orm import db_session
 from domain_objects import Student, Book, BookLending
 
 
@@ -6,17 +7,19 @@ class StudentOperations:
     def __init__(self, data_repository):
         self.data_repository = data_repository
 
+    @db_session
     def add(self, name, pesel, surname):
         student = Student(name, surname, pesel)
-        self.data_repository.add_student(student)
+        student.create_account()
         return student
+
+    @db_session
+    def delete_student(self, student):
+        student.delete()
+        pass
 
     def list(self):
         return self.data_repository.get_student_list()
-
-    def delete(self, to_delete):
-        self.data_repository.delete_student(to_delete)
-        pass
 
     def search(self, data):  # TODO remove duplicates?
         result = self.search_by_pesel(data) + self.search_by_name(data) \
@@ -51,16 +54,19 @@ class StudentOperations:
         return search_result
 
     @staticmethod
+    @db_session
     def set_name(new_name, student):
         student.set_name(new_name)
         pass
 
     @staticmethod
+    @db_session
     def set_surname(new_name, student):
         student.set_surname(new_name)
         pass
 
     @staticmethod
+    @db_session
     def set_pesel(new_pesel, student):
         student.set_pesel(new_pesel)
 
@@ -70,10 +76,14 @@ class BookOperations:
     def __init__(self, data_repository):
         self.data_repository = data_repository
 
+    @db_session
     def add(self, title, author, isbn):
         book = Book(title, author, isbn)
-        self.data_repository.add_book(book)
-        # print(self.data_repository.get_book_list())
+        return book
+
+    @db_session
+    def delete_book(self, book):
+        book.delete()
 
     def list(self):
         return self.data_repository.get_book_list()
@@ -83,10 +93,6 @@ class BookOperations:
 
     def list_pending(self):
         return self.data_repository.pending_book_list()
-
-    def delete(self, to_delete):
-        self.data_repository.delete_book(to_delete)
-        pass
 
     def search(self, data):
         result = self.search_by_title(data) + self.search_by_author(data) + self.search_by_isbn(data) + \
@@ -114,22 +120,27 @@ class BookOperations:
         return search_result
 
     @staticmethod
+    @db_session
     def set_title(book, new_title):
         book.set_title(new_title)
 
     @staticmethod
+    @db_session
     def set_author(book, new_author):
         book.set_author(new_author)
 
     @staticmethod
+    @db_session
     def set_isbn(book, new_isbn):
         book.set_isbn(new_isbn)
 
+    @db_session
     def lend_book(self, student, book):
-        book_lending = BookLending(student, book)
+        book_lending = BookLending(student, book).create()
         self.data_repository.lending_history.append(book_lending)
         return book_lending
 
+    @db_session
     def return_book(self, book):
         for lending in self.data_repository.lending_history:
             if lending.book == book:
