@@ -1,22 +1,25 @@
 import unittest
 
-from data_source import DataRepository
+from pony.orm import db_session
+
+from data_source import SqlDataRepository
 from domain_objects import Student, Book
 from operations import StudentOperations, BookOperations, BookLendingOperations
 import datetime
 
-student = Student('Zuzia', 'Czakon', 1231231231)
-student2 = Student('Michał', 'Jakiś', 1231231231)
-book = Book(1010101010333, 'Ulysses', 'James Joyce')
-student.create()
-student2.create()
-data_repository = DataRepository()
-student_operations = StudentOperations(data_repository)
-book_operations = BookOperations(data_repository)
-book_lending_operations = BookLendingOperations(data_repository)
+with db_session:
+    student = Student(name='Zuzia', surname='Czakon', pesel='456')
+    student2 = Student(name='Michał', surname='Jakiś', pesel='123')
+    book = Book(isbn='1010101010333', title='Ulysses', author='James Joyce')
+    student.create()
+    student2.create()
+    data_repository = SqlDataRepository()
+    student_operations = StudentOperations(data_repository)
+    book_operations = BookOperations(data_repository)
+    book_lending_operations = BookLendingOperations(data_repository)
 
 
-class TestStudentSearchOperations(unittest.TestCase):
+class TestStudentOperations(unittest.TestCase):
     def test_search_by_pesel(self):
         self.assertEqual(student_operations.search_by_pesel(1231231231), [student, student2])
         self.assertEqual(student_operations.search_by_pesel(123), [])
@@ -33,13 +36,9 @@ class TestStudentSearchOperations(unittest.TestCase):
         self.assertEqual(student_operations.search_by_fullname('Zuzia Czakon'), [student])
         self.assertEqual(student_operations.search_by_fullname('Cz'), [])
 
-    def test_search_by_id(self):
-        self.assertEqual(student_operations.search_by_id(id(student)), [student])
-        self.assertEqual(student_operations.search_by_id('Cz'), [])
-
     def test_search(self):
-        self.assertEqual(student_operations.search(1231231231), [student, student2])
-        self.assertEqual(student_operations.search(123), [])
+        self.assertEqual(student_operations.search(123), [student2])
+        self.assertEqual(student_operations.search(1234), [])
         self.assertEqual(student_operations.search('Zuzia'), [student])
         self.assertEqual(student_operations.search('Cz'), [])
         self.assertEqual(student_operations.search('Czakon'), [student])
@@ -52,11 +51,8 @@ class TestStudentSearchOperations(unittest.TestCase):
 
 class TestBookOperations(unittest.TestCase):
 
-    def test_search_by_id(self):
-        self.assertEqual(book_operations.search_by_id(id(book)), [book])
-
     def test_list_available(self):
-        self.assertEqual(book_operations.list_available(), data_repository.get_book_list())
+        self.assertEqual(book_operations.list_available(), data_repository.book_list())
         book_operations.lend_book(student, book)
         self.assertEqual(book_operations.list_available(), [])
         pass

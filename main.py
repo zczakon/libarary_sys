@@ -1,6 +1,6 @@
 from typing import Dict
 
-from data_source import DataRepository
+from data_source import SqlDataRepository
 from book_view import BookView, BookSearchViewComponent
 from student_view import StudentView, StudentSearchViewComponent
 from book_lending_view import BookLendingView
@@ -8,7 +8,7 @@ from operations import StudentOperations, BookOperations, BookLendingOperations
 
 
 def main():
-    data_repository: DataRepository = DataRepository()
+    data_repository: SqlDataRepository = SqlDataRepository()
 
     student_operations = StudentOperations(data_repository)
     book_operations = BookOperations(data_repository)
