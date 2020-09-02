@@ -21,8 +21,8 @@ with db_session:
 
 class TestStudentOperations(unittest.TestCase):
     def test_search_by_pesel(self):
-        self.assertEqual(student_operations.search_by_pesel(1231231231), [student, student2])
-        self.assertEqual(student_operations.search_by_pesel(123), [])
+        self.assertEqual(student_operations.search_by_pesel('456'), [student])
+        self.assertEqual(student_operations.search_by_pesel('123'), [student2])
 
     def test_search_by_name(self):
         self.assertEqual(student_operations.search_by_name('Zuzia'), [student])
@@ -37,15 +37,15 @@ class TestStudentOperations(unittest.TestCase):
         self.assertEqual(student_operations.search_by_fullname('Cz'), [])
 
     def test_search(self):
-        self.assertEqual(student_operations.search(123), [student2])
-        self.assertEqual(student_operations.search(1234), [])
+        self.assertEqual(student_operations.search('123'), [student2])
+        self.assertEqual(student_operations.search(123), [])
+        self.assertEqual(student_operations.search('1234'), [])
         self.assertEqual(student_operations.search('Zuzia'), [student])
         self.assertEqual(student_operations.search('Cz'), [])
         self.assertEqual(student_operations.search('Czakon'), [student])
         self.assertEqual(student_operations.search('Cz'), [])
         self.assertEqual(student_operations.search('Zuzia Czakon'), [student])
         self.assertEqual(student_operations.search('Cz'), [])
-        self.assertEqual(student_operations.search(id(student)), [student])
         self.assertEqual(student_operations.search('Cz'), [])
 
 

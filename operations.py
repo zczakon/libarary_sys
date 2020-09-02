@@ -39,7 +39,7 @@ class StudentOperations:
 
     @db_session
     def search_by_surname(self, surname):
-        return Student.select(lambda x: x.surname == surname)
+        return Student.select(lambda x: x.surname == surname)[:]
 
     @db_session
     def set_name(self, new_name, student):

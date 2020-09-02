@@ -10,6 +10,7 @@ db.bind(provider='sqlite', filename=':memory:')  # TODO bind w mainie i w testac
 
 class Role(db.Entity):
     name = Required(str)
+    account = Optional('Account')
 
     def __str__(self):
         return str(self.name)
@@ -18,6 +19,7 @@ class Role(db.Entity):
 class Account(db.Entity):
     role = Required(Role)
     password = Optional(str)
+    student = Required('Student')
 
     def create_password(self):
         self.password = self.generate_pass(6)
@@ -49,12 +51,12 @@ class Student(db.Entity):
         self.registration_date = datetime.date.today()
 
     def __str__(self):
-        return '({}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
-                                     'ID:' + str(self.id)), 'role: ' + str(self.account.get_role())
+        return '({}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + self.pesel,
+                                     'ID:' + str(self.id))
 
     def __repr__(self):
-        return '({}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
-                                     'ID:' + str(self.id)), 'role: ' + str(self.account.get_role())
+        return '({}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + self.pesel,
+                                     'ID:' + str(self.id))
 
 
 class Book(db.Entity):
