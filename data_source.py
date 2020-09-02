@@ -1,8 +1,6 @@
 from domain_objects import Student, Book, BookLending
 from pony.orm import *
 
-# from pony.orm import *
-
 
 class SqlDataRepository:
     @db_session
