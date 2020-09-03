@@ -5,7 +5,8 @@ import string
 
 db = Database()
 # db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-db.bind(provider='sqlite', filename=':memory:')  # TODO bind w mainie i w testach inny - źle, zrobić db.py gdzie są bindy do testów i pliku...
+db.bind(provider='sqlite',
+        filename=':memory:')  # TODO bind w mainie i w testach inny - źle, zrobić db.py gdzie są bindy do testów i pliku...
 
 
 class Role(db.Entity):
@@ -23,7 +24,8 @@ class Account(db.Entity):
 
     @db_session
     def create_password(self):
-        self.password = self.generate_pass(6)
+        self.set(password=self.generate_pass(6))
+        return self
 
     @db_session
     def change_password(self, new_password):
@@ -48,11 +50,13 @@ class Student(db.Entity):
 
     @db_session
     def create_account(self):
-        self.account = Account(Role(name="user"))
+        self.set(account=Account(Role(name="user")))
+        return self
 
     @db_session
     def create(self):
-        self.registration_date = datetime.date.today()
+        self.set(registration_date=datetime.date.today())
+        return self
 
     def __str__(self):
         return '({}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + self.pesel,
@@ -89,8 +93,9 @@ class BookLending(db.Entity):
 
     @db_session
     def create(self):
-        self.creation_date = datetime.date.today()
-        self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)
+        self.set(creation_date=datetime.date.today())
+        self.set(max_return_date=self.creation_date + datetime.timedelta(days=self.return_time))
+        return self
 
     def __str__(self):
         return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date: '
@@ -101,10 +106,6 @@ class BookLending(db.Entity):
         return '({}, {}, {}, {})'.format(str(self.book), str(self.student), 'creation date :'
                                          + str(self.creation_date), 'return date: ' +
                                          str(self.return_date))
-
-    def is_overdue(self):
-        if self.return_date is None:
-            return datetime.date.today() > self.max_return_date
 
     def rental_time(self):
         return datetime.date.today() - self.creation_date

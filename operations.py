@@ -110,6 +110,7 @@ class BookOperations:
         student = Student.get(id=student_id)
         book = Book.get(id=book_id)
         book_lending = BookLending(student=student, book=book).create()
+        print(book_lending.creation_date)
         return book_lending
 
     @db_session
@@ -117,7 +118,7 @@ class BookOperations:
         book = Book.get(id=book_id)
         for lending in self.data_repository.lending_history():
             if lending.book == book:
-                lending.return_date = datetime.date.today()
+                lending.set(return_date=datetime.date.today())
                 pass
 
 
@@ -129,16 +130,16 @@ class BookLendingOperations:
         return self.search_by_student(data) + self.search_by_book(data)
 
     def search_by_student(self, student):
-        return self.data_repository.lendings_per_student(student)
+        return self.data_repository.lendings_per_student(student.id)
 
     def search_by_book(self, book):
-        return self.data_repository.lendings_per_book(book)
+        return self.data_repository.lendings_per_book(book.id)
 
     def list_overdue(self):
         return self.data_repository.overdue_book_list()
 
     def list(self):
-        return self.data_repository.lending_history
+        return self.data_repository.lending_history()
 
     @staticmethod
     def check_rental_time(book_lending):

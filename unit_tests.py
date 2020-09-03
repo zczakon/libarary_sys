@@ -8,7 +8,6 @@ from operations import StudentOperations, BookOperations, BookLendingOperations
 import datetime
 
 with db_session:
-
     student = Student(name='Zuzia', surname='Czakon', pesel='456')
     student2 = Student(name='Michał', surname='Jakiś', pesel='123')
     book = Book(isbn='1010101010333', title='Ulysses', author='James Joyce')
@@ -77,12 +76,12 @@ with db_session:
     class TestBookLendingOperations(unittest.TestCase):
 
         def test_list_overdue(self):
-            book_lending = book_operations.lend_book(student, book)
+            book_lending = book_operations.lend_book(student.id, book.id)
             self.assertEqual(book_lending_operations.list_overdue(), [])
-            book_lending.set_creation_date(datetime.date(2010, 12, 21))
-            book_lending.max_return_date = book_lending.get_creation_date() + datetime.timedelta(days=30)
+            book_lending.set(creation_date=datetime.date(2010, 12, 21))
+            book_lending.set(max_return_date=book_lending.creation_date + datetime.timedelta(days=30))
             self.assertEqual(book_lending_operations.list_overdue(), [book_lending])
 
-        def test_search_by_student(self):  # lendings_per_student ok
-            book_lending = book_operations.lend_book(student, book)
+        def test_search_by_student(self):
+            book_lending = book_operations.lend_book(student.id, book.id)
             self.assertEqual(book_lending_operations.search_by_student(student), [book_lending])
