@@ -21,15 +21,17 @@ class Account(db.Entity):
     password = Optional(str)
     student = Required('Student')
 
+    @db_session
     def create_password(self):
         self.password = self.generate_pass(6)
 
+    @db_session
     def change_password(self, new_password):
         self.password = new_password
         pass
 
-    @staticmethod
-    def generate_pass(n: int) -> str:
+    @db_session
+    def generate_pass(self, n: int) -> str:
         return ''.join((random.choice(string.ascii_letters + string.digits) for _ in range(n)))
 
 
@@ -44,9 +46,11 @@ class Student(db.Entity):
     def fullname(self):
         return str(self.name) + ' ' + str(self.surname)
 
+    @db_session
     def create_account(self):
         self.account = Account(Role(name="user"))
 
+    @db_session
     def create(self):
         self.registration_date = datetime.date.today()
 
@@ -77,12 +81,13 @@ class Book(db.Entity):
 class BookLending(db.Entity):
     student = Required(Student)
     book = Required(Book)
-    creation_date = Required(datetime.datetime)
-    max_return_date = Required(datetime.datetime)
-    return_date = Optional(datetime.datetime)
+    creation_date = Optional(datetime.date)
+    max_return_date = Optional(datetime.date)
+    return_date = Optional(datetime.date)
 
     return_time = 30
 
+    @db_session
     def create(self):
         self.creation_date = datetime.date.today()
         self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)

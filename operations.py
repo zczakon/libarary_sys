@@ -23,7 +23,7 @@ class StudentOperations:
 
     def search(self, data):
         return self.search_by_pesel(data) + self.search_by_name(data) \
-                 + self.search_by_surname(data) + self.search_by_fullname(data)
+               + self.search_by_surname(data) + self.search_by_fullname(data)
 
     @db_session
     def search_by_pesel(self, pesel):
@@ -106,13 +106,16 @@ class BookOperations:
         book.isbn = new_isbn
 
     @db_session
-    def lend_book(self, student, book):
+    def lend_book(self, student_id, book_id):
+        student = Student.get(id=student_id)
+        book = Book.get(id=book_id)
         book_lending = BookLending(student=student, book=book).create()
         return book_lending
 
     @db_session
-    def return_book(self, book):
-        for lending in self.data_repository.lending_history:
+    def return_book(self, book_id):
+        book = Book.get(id=book_id)
+        for lending in self.data_repository.lending_history():
             if lending.book == book:
                 lending.return_date = datetime.date.today()
                 pass

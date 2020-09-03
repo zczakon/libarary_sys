@@ -1,4 +1,4 @@
-from domain_objects import Student, Book, BookLending
+from domain_objects import Student, Book, BookLending, db
 from pony.orm import *
 
 
@@ -25,7 +25,8 @@ class SqlDataRepository:
 
     @db_session
     def pending_book_list(self):
-        return BookLending.select(lambda x: x.return_date is None)[:]
+        # pending_lendings = BookLending.select(lambda x: x.return_date is None)[:]
+        return select(lending.book for lending in BookLending if lending.return_date is None)[:]
 
     @db_session
     def available_book_list(self):

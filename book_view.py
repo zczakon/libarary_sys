@@ -41,7 +41,7 @@ class BookView:
         available_book_list = self.book_operations.list_available()
 
         if book in available_book_list:
-            book_lending = self.book_operations.lend_book(student, book)
+            book_lending = self.book_operations.lend_book(student.id, book.id)
             print('Created book lending:', book_lending)
         else:
             print('Book is currently unavailable.')
@@ -57,7 +57,7 @@ class BookView:
         pending_book_list = self.book_operations.list_pending()
 
         if book in pending_book_list:
-            self.book_operations.return_book(book)
+            self.book_operations.return_book(book.id)
             print('"' + book.title + '"', 'was successfully returned')
         else:
             print('Book has already been returned.')
