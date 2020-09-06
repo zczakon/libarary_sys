@@ -1,4 +1,4 @@
-import unittest
+import custom_test_case
 
 from pony.orm import db_session
 
@@ -6,6 +6,7 @@ from data_source import SqlDataRepository
 from domain_objects import Student, Book
 from operations import StudentOperations, BookOperations, BookLendingOperations
 import datetime
+
 
 with db_session:
     student = Student(name='Zuzia', surname='Czakon', pesel='456')
@@ -19,12 +20,15 @@ with db_session:
     book_lending_operations = BookLendingOperations(data_repository)
 
 
-    class TestDomainObjects(unittest.TestCase):
+    class TestDomainObjects(custom_test_case.CustomTestCase):
         def test_is_overdue(self):
+            self.assertListEqual([student, student], [student, student])
+            self.assertNotEqual(student, student2)
+            self.assertEqual(student, student)
             pass
 
 
-    class TestStudentOperations(unittest.TestCase):
+    class TestStudentOperations(custom_test_case.CustomTestCase):
         def test_search_by_pesel(self):
             self.assertEqual(student_operations.search_by_pesel('456'), [student])
             self.assertEqual(student_operations.search_by_pesel('123'), [student2])
@@ -54,7 +58,7 @@ with db_session:
             self.assertEqual(student_operations.search('Cz'), [])
 
 
-    class TestBookOperations(unittest.TestCase):
+    class TestBookOperations(custom_test_case.CustomTestCase):
 
         def test_list_available(self):
             student_id = student.id
@@ -73,7 +77,7 @@ with db_session:
             self.assertEqual(book_operations.list_pending(), [])
 
 
-    class TestBookLendingOperations(unittest.TestCase):
+    class TestBookLendingOperations(custom_test_case.CustomTestCase):
 
         def test_list_overdue(self):
             book_lending = book_operations.lend_book(student.id, book.id)
