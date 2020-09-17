@@ -17,7 +17,7 @@ class StudentOperations:
         pass
 
     def list(self):
-        return self.data_repository.get_student_list()
+        return self.data_repository.student_list()
 
     def delete(self, to_delete):
         self.session.delete(to_delete)
@@ -31,9 +31,7 @@ class StudentOperations:
 
     def search_by_pesel(self, pesel):
         student_list = self.list()
-        # print('student list', student_list)  # remove
         search_result = [student for student in student_list if student.pesel == pesel]
-        # print('search result by pesel: ', search_result)  # remove
         return search_result
 
     def search_by_fullname(self, fullname):
@@ -56,20 +54,17 @@ class StudentOperations:
         search_result = [student for student in student_list if student.id == student_id]
         return search_result
 
-    @staticmethod
-    def set_name(new_name, student):
+    def set_name(self, new_name, student):
         student.name = new_name
-        pass
+        self.session.commit()
 
-    @staticmethod
-    def set_surname(new_name, student):
+    def set_surname(self, new_name, student):
         student.surname = new_name
-        pass
+        self.session.commit()
 
-    @staticmethod
-    def set_pesel(new_pesel, student):
+    def set_pesel(self, new_pesel, student):
         student.pesel = new_pesel
-
+        self.session.commit()
 
 class BookOperations:
     Session = db_bind.sessionmaker(bind=db_bind.engine)
@@ -84,7 +79,7 @@ class BookOperations:
         self.session.commit()
 
     def list(self):
-        return self.data_repository.get_book_list()
+        return self.data_repository.book_list()
 
     def list_available(self):
         return self.data_repository.available_book_list()
@@ -122,27 +117,29 @@ class BookOperations:
         search_result = [book for book in book_list if book.isbn == isbn]
         return search_result
 
-    @staticmethod
-    def set_title(book, new_title):
+    def set_title(self, book, new_title):
         book.title = new_title
+        self.session.commit()
 
-    @staticmethod
-    def set_author(book, new_author):
+    def set_author(self, book, new_author):
         book.author = new_author
+        self.session.commit()
 
-    @staticmethod
-    def set_isbn(book, new_isbn):
+    def set_isbn(self, book, new_isbn):
         book.isbn = new_isbn
+        self.session.commit()
 
     def lend_book(self, student, book):
         book_lending = BookLending(student, book).create()
-        self.data_repository.lending_history.append(book_lending)
+        self.session.add(book_lending)
+        self.session.commit()
         return book_lending
 
     def return_book(self, book):
         for lending in self.data_repository.lending_history:
             if lending.book == book:
                 lending.set_return_date(datetime.date.today())
+                self.session.commit()
                 pass
 
 
@@ -165,7 +162,7 @@ class BookLendingOperations:
         return self.data_repository.overdue_book_list()
 
     def list(self):
-        return self.data_repository.get_lending_history()
+        return self.data_repository.lending_history()
 
     @staticmethod
     def check_rental_time(book_lending):
