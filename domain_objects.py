@@ -15,10 +15,8 @@ class Student(db_bind.Base):
     surname = Column(String)
     pesel = Column(String)
     registration_date = Column(DateTime)
-    account_id = Column(Integer, ForeignKey('accounts.id'))
-    lending_id = Column(Integer, ForeignKey('lendings.id'))
 
-    account = relationship("Account", back_populates="student")
+    account = relationship("Account", uselist=False, back_populates="student")
     lendings = relationship("BookLending", back_populates="student")
 
     def __str__(self):
@@ -50,7 +48,6 @@ class Book(db_bind.Base):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     author = Column(String)
-    lending_id = Column(Integer, ForeignKey('lendings.id'))
 
     lendings = relationship("BookLending", back_populates="book")
 
@@ -90,7 +87,7 @@ class BookLending(db_bind.Base):
 
     def create(self):
         self.creation_date = datetime.date.today()
-        self.max_return_date=self.creation_date + datetime.timedelta(days=self.return_time)
+        self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)
         return self
 
     def is_overdue(self):
