@@ -32,11 +32,11 @@ class Student(db_bind.Base):
 
     def create(self):
         self.registration_date = datetime.date.today()
+        self.create_user_account()
         return self
 
-    def create_account(self):
+    def create_user_account(self):
         self.account = Account(Role(name="user"))
-        return self
 
     def fullname(self):
         return str(self.name) + ' ' + str(self.surname)
