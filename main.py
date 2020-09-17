@@ -8,7 +8,7 @@ from operations import StudentOperations, BookOperations, BookLendingOperations
 
 
 def main():
-    data_repository: SqlDataRepository = SqlDataRepository()
+    data_repository: SqlDataRepository = SqlDataRepository([], [])
 
     student_operations = StudentOperations(data_repository)
     book_operations = BookOperations(data_repository)

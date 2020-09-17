@@ -1,41 +1,37 @@
-import datetime
-
-from domain_objects import Student, Book, BookLending
-from pony.orm import *
 
 
 class SqlDataRepository:
-    @db_session
     def student_list(self):
-        return Student.select()[:]
+        pass
 
-    @db_session
     def book_list(self):
-        return Book.select()[:]
+        pass
 
-    @db_session
-    def lending_history(self):
-        return BookLending.select()[:]
+    def lending_list(self):
+        pass
 
-    @db_session
-    def lendings_per_student(self, student_id):  # TODO fix
-        student = Student.get(id=student_id)
-        return list(student.book_lendings)
+    def lendings_per_student(self, student):
+        student_lendings = [lending for lending in self.lending_history if lending.student == student]
+        return student_lendings
 
-    @db_session
-    def lendings_per_book(self, book_id):  # TODO fix
-        book = Book.get(id=book_id)
-        return list(book.book_lendings)
+    def lendings_per_book(self, book):
+        books_lendings = [lending for lending in self.lending_history if lending.book == book]
+        return books_lendings
 
-    @db_session
     def pending_book_list(self):
-        # pending_lendings = BookLending.select(lambda x: x.return_date is None)[:]
-        return select(lending.book for lending in BookLending if lending.return_date is None)[:]
+        pending = [lending.book for lending in self.lending_history if lending.return_date is None]
+        return pending
 
-    @db_session
     def available_book_list(self):
-        return Book.select(lambda x: not x.book_lendings)[:]
+        available = [book for book in self.book_list if self.is_lent(book) is False]
+        return available
 
-    @db_session
     def overdue_book_list(self):
-        return BookLending.select(lambda x: x.return_date is None and datetime.date.today() > x.max_return_date)[:]
+        overdue_lendings = [lending for lending in self.lending_history if lending.is_overdue()]
+        return overdue_lendings
+
+    def is_lent(self, book):
+        for lending in self.lending_history:
+            if lending.book == book and lending.return_date is None:
+                return True
+        return False

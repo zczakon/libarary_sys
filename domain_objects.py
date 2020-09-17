@@ -16,8 +16,8 @@ class Student(db_bind.Base):
     pesel = Column(String)
     registration_date = Column(DateTime)
 
-    account = relationship("Account", uselist=False, back_populates="student")
-    lendings = relationship("BookLending", back_populates="student")
+    account = relationship("Account", uselist=False, back_populates="student")  # cascade="all, delete, delete-orphan" ?
+    lendings = relationship("BookLending", back_populates="student")  # cascade="all, delete, delete-orphan" ?
 
     def __str__(self):
         return '({}, {}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
@@ -49,7 +49,7 @@ class Book(db_bind.Base):
     title = Column(String)
     author = Column(String)
 
-    lendings = relationship("BookLending", back_populates="book")
+    lendings = relationship("BookLending", back_populates="book")  # cascade="all, delete, delete-orphan" ?
 
     def __str__(self):
         return '({}, {}, {}, {})'.format(str(self.title), 'author: ' + self.author, 'ISBN: ' +
@@ -101,3 +101,6 @@ class BookLending(db_bind.Base):
         if self.return_date is None:
             pass
         return self.max_return_date - self.max_return_date
+
+
+db_bind.Base.metadata.create_all(db_bind.engine)
