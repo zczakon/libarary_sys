@@ -66,6 +66,7 @@ class StudentOperations:
         student.pesel = new_pesel
         self.session.commit()
 
+
 class BookOperations:
     Session = db_bind.sessionmaker(bind=db_bind.engine)
     session = Session()
@@ -159,7 +160,7 @@ class BookLendingOperations:
         return self.data_repository.lendings_per_book(book)
 
     def list_overdue(self):
-        return self.data_repository.overdue_book_list()
+        return self.data_repository.overdue_book_lendings_list()
 
     def list(self):
         return self.data_repository.lending_history()

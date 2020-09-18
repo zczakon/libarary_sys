@@ -90,10 +90,6 @@ class BookLending(db_bind.Base):
         self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)
         return self
 
-    def is_overdue(self):
-        if self.return_date is None:
-            return datetime.date.today() > self.max_return_date
-
     def rental_time(self):
         return datetime.date.today() - self.creation_date
 
