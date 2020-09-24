@@ -1,16 +1,16 @@
 import unittest
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-import db
 from data_source import SqlDataRepository
 from domain_objects import Student, Book, BookLending
+import db
 from operations import StudentOperations
+from sqlalchemy.orm import sessionmaker
+
+data_repository = SqlDataRepository()
 
 
 class TestQuery(unittest.TestCase):
-    engine = create_engine('sqlite:///:memory:')
+    engine = db.create_engine('sqlite:///:memory:')
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -46,7 +46,7 @@ class TestQuery(unittest.TestCase):
 
 
 class TestStudentOperations(unittest.TestCase):
-    engine = create_engine('sqlite:///:memory:')
+    engine = db.create_engine('sqlite:///:memory:')
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -58,7 +58,7 @@ class TestStudentOperations(unittest.TestCase):
         self.session.add_all([self.student1, self.student2])
         self.session.commit()
 
-        self.student_operations = StudentOperations(data_repository=SqlDataRepository())
+        self.student_operations = StudentOperations(data_repository)
 
     def tearDown(self):
         db.Base.metadata.drop_all(self.engine)
@@ -72,7 +72,7 @@ class TestStudentOperations(unittest.TestCase):
         result = self.session.query(Student).all()
         print('result:', result)
 
-        expected = [self.student1, self.student2, self.student3]
+        expected = [self.student1, self.student2, student3]
         self.assertEqual(result, expected)
 
     def test_list(self):
