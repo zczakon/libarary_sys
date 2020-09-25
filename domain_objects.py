@@ -1,13 +1,11 @@
 import datetime
 
 from sqlalchemy.orm import relationship
-
-from accounts import Account, Role
-import db_bind
+import db
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 
 
-class Student(db_bind.Base):
+class Student(db.Base):
     __tablename__ = 'students'
 
     id = Column(Integer, primary_key=True)
@@ -16,7 +14,6 @@ class Student(db_bind.Base):
     pesel = Column(String)
     registration_date = Column(DateTime)
 
-    account = relationship("Account", uselist=False, back_populates="student")  # cascade="all, delete, delete-orphan" ?
     lendings = relationship("BookLending", back_populates="student")  # cascade="all, delete, delete-orphan" ?
 
     def __str__(self):
@@ -24,28 +21,31 @@ class Student(db_bind.Base):
                                          'ID:' + str(self.id), 'role: ' + str(self.account.get_role()))
 
     def __repr__(self):
-        return '({}, {}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
-                                         'ID:' + str(self.id), 'role: ' + str(self.account.get_role()))
+        return '({}, {}, {})'.format(self.name + ' ' + self.surname, 'PESEL: ' + str(self.pesel),
+                                     'ID:' + str(self.id))
 
     def __eq__(self, other):
-        pass
+        if self.__class__ == other.__class__ and self.id == other.id and self.name == other.name and self.pesel and \
+                self.registration_date == other.registration_date:
+            return True
+        return False
+
+    def __hash__(self):
+        return hash(self.x)
 
     def create(self):
         self.registration_date = datetime.date.today()
-        self.create_user_account()
         return self
-
-    def create_user_account(self):
-        self.account = Account(Role(name="user"))
 
     def fullname(self):
         return str(self.name) + ' ' + str(self.surname)
 
 
-class Book(db_bind.Base):
+class Book(db.Base):
     __tablename__ = 'books'
 
     id = Column(Integer, primary_key=True)
+    isbn = Column(String)
     title = Column(String)
     author = Column(String)
 
@@ -59,8 +59,14 @@ class Book(db_bind.Base):
         return '({}, {}, {}, {})'.format(str(self.title), 'author: ' + self.author, 'ISBN: ' +
                                          str(self.isbn), 'ID: ' + str(self.id))
 
+    def __eq__(self, other):
+        if self.__class__ == other.__class__ and self.id == other.id and self.isbn == other.isbn and self.title == \
+                other.title and self.author == other.author:
+            return True
+        return False
 
-class BookLending(db_bind.Base):
+
+class BookLending(db.Base):
     __tablename__ = 'lendings'
 
     id = Column(Integer, primary_key=True)
@@ -85,6 +91,13 @@ class BookLending(db_bind.Base):
                                          + str(self.creation_date), 'return date: ' +
                                          str(self.return_date))
 
+    def __eq__(self, other):
+        if self.__class__ == other.__class__ and self.id == other.id and self.creation_date == other.creation_date and \
+                self.max_return_date == other.max_return_date and self.student_id == other.student_id and self.book_id \
+                == other.book_id:
+            return True
+        return False
+
     def create(self):
         self.creation_date = datetime.date.today()
         self.max_return_date = self.creation_date + datetime.timedelta(days=self.return_time)
@@ -98,5 +111,3 @@ class BookLending(db_bind.Base):
             pass
         return self.max_return_date - self.max_return_date
 
-
-db_bind.Base.metadata.create_all(db_bind.engine)
